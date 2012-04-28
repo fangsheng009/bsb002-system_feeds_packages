@@ -1,0 +1,13 @@
+--- a/src/upnp_connmgr.c
++++ b/src/upnp_connmgr.c
+@@ -38,8 +38,8 @@
+ #include "upnp_device.h"
+ #include "upnp_connmgr.h"
+ 
+-//#define CONNMGR_SERVICE "urn:upnp-org:serviceId:ConnectionManager"
+-#define CONNMGR_SERVICE "urn:schemas-upnp-org:service:ConnectionManager"
++#define CONNMGR_SERVICE "urn:upnp-org:serviceId:ConnectionManager"
++//#define CONNMGR_SERVICE "urn:schemas-upnp-org:service:ConnectionManager"
+ #define CONNMGR_TYPE	"urn:schemas-upnp-org:service:ConnectionManager:1"
+ #define CONNMGR_SCPD_URL "/upnp/renderconnmgrSCPD.xml"
+ #define CONNMGR_CONTROL_URL "/upnp/control/renderconnmgr1"

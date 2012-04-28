@@ -1,0 +1,135 @@
+--- a/src/webserver.c
++++ b/src/webserver.c
+@@ -134,7 +134,7 @@ out:
+ 	return result;
+ }
+ 
+-static int webserver_get_info(const char *filename, struct File_Info *info)
++int webserver_get_info(const char *filename, struct File_Info *info)
+ {
+ 	int result = -1;
+ 	struct virtual_file *virtfile = virtual_files;
+@@ -163,7 +163,7 @@ out:
+ 	return result;
+ }
+ 
+-static UpnpWebFileHandle
++UpnpWebFileHandle
+ webserver_open(const char *filename, enum UpnpOpenFileMode mode)
+ {
+ 	struct virtual_file *virtfile = virtual_files;
+@@ -198,7 +198,7 @@ static inline int minimum(int a, int b)
+ 	return (a<b)?a:b;
+ }
+ 
+-static int webserver_read(UpnpWebFileHandle fh, char *buf, size_t buflen)
++int webserver_read(UpnpWebFileHandle fh, char *buf, size_t buflen)
+ {
+ 	WebServerFile *file = (WebServerFile *) fh;
+ 	ssize_t len = -1;
+@@ -218,14 +218,14 @@ static int webserver_read(UpnpWebFileHan
+ 	return len;
+ }
+ 
+-static int webserver_write(UpnpWebFileHandle fh, char *buf, size_t buflen)
++int webserver_write(UpnpWebFileHandle fh, char *buf, size_t buflen)
+ {
+ 	ENTER();
+ 	LEAVE();
+ 	return -1;
+ }
+ 
+-static int webserver_seek(UpnpWebFileHandle fh, off_t offset, int origin)
++int webserver_seek(UpnpWebFileHandle fh, off_t offset, int origin)
+ {
+ 	WebServerFile *file = (WebServerFile *) fh;
+ 	off_t newpos = -1;
+@@ -257,7 +257,7 @@ out:
+ 	return result;
+ }
+ 
+-static int webserver_close(UpnpWebFileHandle fh)
++int webserver_close(UpnpWebFileHandle fh)
+ {
+ 	WebServerFile *file = (WebServerFile *) fh;
+ 
+@@ -269,11 +269,3 @@ static int webserver_close(UpnpWebFileHa
+ 	return 0;
+ }
+ 
+-struct UpnpVirtualDirCallbacks virtual_dir_callbacks = {
+-	webserver_get_info,
+-	webserver_open,
+-	webserver_read,
+-	webserver_write,
+-	webserver_seek,
+-	webserver_close
+-};
+--- a/src/webserver.h
++++ b/src/webserver.h
+@@ -24,10 +24,25 @@
+ #ifndef _WEBSERVER_H
+ #define _WEBSERVER_H
+ 
+-extern struct UpnpVirtualDirCallbacks virtual_dir_callbacks;
++#include <upnp/upnp.h>
++
+ extern int webserver_register_buf(const char *path, const char *contents,
+                                   const char *content_type);
+ extern int webserver_register_file(const char *path,
+                                    const char *content_type);
++int webserver_get_info(const char *filename,
++                       struct File_Info *info);
++UpnpWebFileHandle webserver_open(const char *filename,
++                                 enum UpnpOpenFileMode mode);
++int webserver_read(UpnpWebFileHandle fh,
++                   char *buf,
++                   size_t buflen);
++int webserver_write(UpnpWebFileHandle fh,
++                    char *buf,
++                    size_t buflen);
++int webserver_seek(UpnpWebFileHandle fh,
++                   off_t offset,
++                   int origin);
++int webserver_close(UpnpWebFileHandle fh);
+ 
+ #endif /* _WEBSERVER_H */
+--- a/src/upnp_device.c
++++ b/src/upnp_device.c
+@@ -373,9 +373,34 @@ int upnp_device_init(struct device *devi
+ 		printf("UpnpEnableWebServer() Error: %d\n", rc);
+ 		goto upnp_err_out;
+ 	}
+-	rc = UpnpSetVirtualDirCallbacks(&virtual_dir_callbacks);
++	rc = UpnpVirtualDir_set_GetInfoCallback(&webserver_get_info);
+ 	if (UPNP_E_SUCCESS != rc) {
+-		printf("UpnpSetVirtualDirCallbacks() Error: %d\n", rc);
++		printf("UpnpVirtualDir_set_GetInfoCallback() Error: %d\n", rc);
++		goto upnp_err_out;
++	}
++	rc = UpnpVirtualDir_set_OpenCallback(&webserver_open);
++	if (UPNP_E_SUCCESS != rc) {
++		printf("UpnpVirtualDir_set_OpenCallback() Error: %d\n", rc);
++		goto upnp_err_out;
++	}
++	rc = UpnpVirtualDir_set_ReadCallback(&webserver_read);
++	if (UPNP_E_SUCCESS != rc) {
++		printf("UpnpVirtualDir_set_ReadCallback() Error: %d\n", rc);
++		goto upnp_err_out;
++	}
++	rc = UpnpVirtualDir_set_WriteCallback(&webserver_write);
++	if (UPNP_E_SUCCESS != rc) {
++		printf("UpnpVirtualDir_set_WriteCallback() Error: %d\n", rc);
++		goto upnp_err_out;
++	}
++	rc = UpnpVirtualDir_set_SeekCallback(&webserver_seek);
++	if (UPNP_E_SUCCESS != rc) {
++		printf("UpnpVirtualDir_set_SeekCallback() Error: %d\n", rc);
++		goto upnp_err_out;
++	}
++	rc = UpnpVirtualDir_set_CloseCallback(&webserver_close);
++	if (UPNP_E_SUCCESS != rc) {
++		printf("UpnpVirtualDir_set_CloseCallback() Error: %d\n", rc);
+ 		goto upnp_err_out;
+ 	}
+ 	rc = UpnpAddVirtualDir("/upnp");
