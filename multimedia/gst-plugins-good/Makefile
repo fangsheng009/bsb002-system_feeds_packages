@@ -8,13 +8,16 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gst-plugins-good
 PKG_VERSION:=0.10.23
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://gstreamer.freedesktop.org/src/gst-plugins-good/
 PKG_MD5SUM:=9cddbb0e7e90677f0cc05c23feffef5c
 
 PKG_BUILD_DEPENDS:= gstreamer gst-plugins-base liboil
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_PACKAGE_gst-mod-apetag \
+	CONFIG_PACKAGE_gst-mod-qtdemux
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -48,6 +51,8 @@ $(call Package/gstreamer/description/Default)
 endef
 
 
+GST_COND_SELECT:= $(patsubst %,$(if $(CONFIG_PACKAGE_gst-mod-$(1)),--enable,--disable)-%, $(1))
+
 GST_VERSION:=0.10
 
 CONFIGURE_ARGS += \
@@ -57,7 +62,7 @@ CONFIGURE_ARGS += \
 	--disable-aalib \
 	--disable-alpha \
 	--disable-annodex \
-	--disable-apetag \
+	$(call GST_COND_SELECT,apetag) \
 	--disable-auparse \
 	--disable-avi \
 	--disable-bz2 \
@@ -85,7 +90,7 @@ CONFIGURE_ARGS += \
 	--disable-osx_audio \
 	--disable-osx_video \
 	--disable-pulse \
-	--disable-qtdemux \
+	$(call GST_COND_SELECT,qtdemux) \
 	--disable-rtspmanager \
 	--disable-smpte \
 	--disable-shout2 \
@@ -148,6 +153,7 @@ define GstBuildPlugin
   $$(eval $$(call BuildPackage,gst-mod-$(1)))
 endef
 
+$(eval $(call GstBuildPlugin,apetag,ape tag reader,pbutils tag,,))
 $(eval $(call GstBuildPlugin,audiofx,audio effects,audio fft controller,,))
 $(eval $(call GstBuildPlugin,autodetect,format auto-detection,,,))
 $(eval $(call GstBuildPlugin,cutter,audio cutter,audio,,))
@@ -161,6 +167,7 @@ $(eval $(call GstBuildPlugin,level,audio level,audio,,))
 $(eval $(call GstBuildPlugin,multifile,multiple files access,,,))
 $(eval $(call GstBuildPlugin,multipart,multipart stream handling,,,))
 $(eval $(call GstBuildPlugin,ossaudio,OSS audio support,audio,,))
+$(eval $(call GstBuildPlugin,qtdemux,QuickTime demux,riff audio rtp,,))
 $(eval $(call GstBuildPlugin,replaygain,volume normalization,pbutils,,))
 $(eval $(call GstBuildPlugin,rtp,RTP,audio rtp tag,,))
 $(eval $(call GstBuildPlugin,rtsp,RTSP,interfaces rtp rtsp sdp,,))
