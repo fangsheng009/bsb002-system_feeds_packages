@@ -50,7 +50,7 @@ start() {
 	while ! ifconfig br-lan 2>/dev/null 1>&2; do sleep 1;done
 
 	# Start the daemon
-	service_start /usr/bin/gmediarender ${GMROPTS}
+	eval service_start /usr/bin/gmediarender ${GMROPTS}
 }
 
 stop() {
