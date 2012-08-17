@@ -1,0 +1,91 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -72,8 +72,6 @@ if test "x$enable_debug" = "xyes"; then
+         CFLAGS="$CFLAGS -g -Wall -Werror"
+ fi
+ 
+-GOBJECT_INTROSPECTION_CHECK([0.6.4])
+-
+ # Gtk-doc
+ GTK_DOC_CHECK([1.0])
+ 
+--- a/libgupnp/gena-protocol.h
++++ b/libgupnp/gena-protocol.h
+@@ -28,9 +28,16 @@ G_BEGIN_DECLS
+ #define GENA_METHOD_UNSUBSCRIBE "UNSUBSCRIBE"
+ #define GENA_METHOD_NOTIFY      "NOTIFY"
+ 
+-#define GENA_MIN_TIMEOUT     1800
++/*
++	7.2.22 DDC UPnP Event Notification Handling
++    	Requirement [7.2.22.1]: UPnP devices must send events to all properly subscribed UPnP
++     	control points. The device must enforce a subscription TIMEOUT value of 5 minutes.
++	The UPnP device behavior of enforcing this 5 minutes TIMEOUT value is
++	implemented by specifying "TIMEOUT: second-300" as an HTTP header/value pair.
++*/
++#define GENA_MIN_TIMEOUT     300
+ #define GENA_MAX_TIMEOUT     604800 /* 7 days */
+-#define GENA_DEFAULT_TIMEOUT 1800
++#define GENA_DEFAULT_TIMEOUT 300
+ 
+ G_END_DECLS
+ 
+--- a/libgupnp/gupnp-device-info.c
++++ b/libgupnp/gupnp-device-info.c
+@@ -791,7 +791,7 @@ gupnp_device_info_get_icon_url (GUPnPDev
+                                         }
+                                 }
+ 
+-                                icons = g_list_prepend (icons, icon);
++                                icons = g_list_append (icons, icon);
+                         } else
+                                 icon_free (icon);
+                 }
+--- a/libgupnp/gupnp-service.c
++++ b/libgupnp/gupnp-service.c
+@@ -874,6 +874,8 @@ control_server_handler (SoupServer
+         char *action_name;
+         char *end;
+         GUPnPServiceAction *action;
++        goffset length;
++        SoupEncoding encoding;
+ 
+         service = GUPNP_SERVICE (user_data);
+ 
+@@ -883,9 +885,23 @@ control_server_handler (SoupServer
+                 return;
+         }
+ 
+-        if (msg->request_body->length == 0) {
++        encoding = soup_message_headers_get_encoding (msg->request_headers);
++        switch (encoding) {
++        case SOUP_ENCODING_CHUNKED:
++                if (msg->request_body->length == 0) {
++                        soup_message_set_status (msg, SOUP_STATUS_BAD_REQUEST);
++                        return;
++                }
++                break;
++      	case SOUP_ENCODING_CONTENT_LENGTH:
++                length = soup_message_headers_get_content_length (msg->request_headers);
++                if (length == 0) {
++                        soup_message_set_status (msg, SOUP_STATUS_BAD_REQUEST);
++                        return;
++                }
++                break;
++        default:
+                 soup_message_set_status (msg, SOUP_STATUS_BAD_REQUEST);
+-
+                 return;
+         }
+ 
+@@ -1829,6 +1845,10 @@ notify_subscriber (gpointer key,
+         }
+ 
+         soup_message_headers_append (msg->request_headers,
++                                     "CONNECTION",
++                                     "close");
++
++        soup_message_headers_append (msg->request_headers,
+                                      "NT",
+                                      "upnp:event");
+ 

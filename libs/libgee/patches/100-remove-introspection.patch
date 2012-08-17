@@ -1,0 +1,36 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -56,8 +56,6 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLI
+ AC_SUBST(GLIB_CFLAGS)
+ AC_SUBST(GLIB_LIBS)
+ 
+-GOBJECT_INTROSPECTION_CHECK([0.9.0])
+-
+ AC_OUTPUT([Makefile
+            gee-1.0.pc
+            benchmark/Makefile
+--- a/gee/Makefile.am
++++ b/gee/Makefile.am
+@@ -92,22 +92,6 @@ dist_vapi_DATA = \
+ 	gee-1.0.vapi \
+ 	$(NULL)
+ 
+-if HAVE_INTROSPECTION
+-girdir = @INTROSPECTION_GIRDIR@
+-
+-gir_DATA = \
+-	Gee-1.0.gir \
+-	$(NULL)
+-
+-typelibdir = @INTROSPECTION_TYPELIBDIR@
+-typelib_DATA = \
+-	Gee-1.0.typelib \
+-	$(NULL)
+-
+-Gee-1.0.typelib: Gee-1.0.gir
+-	@INTROSPECTION_COMPILER@ --shared-library=libgee -o $@ $^
+-endif
+-
+ EXTRA_DIST += $(libgee_la_VALASOURCES) gee-1.0.vapi Gee-1.0.gir gee.vala.stamp
+ 
+ MAINTAINERCLEANFILES = \
