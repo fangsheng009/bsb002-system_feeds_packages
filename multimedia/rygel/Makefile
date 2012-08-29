@@ -103,10 +103,10 @@ define Package/rygel/install
 	$(INSTALL_DIR) $(1)/etc/dbus-1/system.d
 	$(CP) ./files/dlnas.conf $(1)/etc/dbus-1/system.d
 
-	$(INSTALL_DATA) ./files/qca_icon_SM.png $(1)/share/rygel/xml
-	$(INSTALL_DATA) ./files/qca_icon_SM.jpg $(1)/share/rygel/xml
-	$(INSTALL_DATA) ./files/qca_icon_LRG.png $(1)/share/rygel/xml
-	$(INSTALL_DATA) ./files/qca_icon_LRG.jpg $(1)/share/rygel/xml
+	$(INSTALL_DATA) ./files/Skifta_icon_LRG.jpg $(1)/share/rygel/xml
+	$(INSTALL_DATA) ./files/Skifta_icon_LRG.png $(1)/share/rygel/xml
+	$(INSTALL_DATA) ./files/Skifta_icon_SM.jpg $(1)/share/rygel/xml
+	$(INSTALL_DATA) ./files/Skifta_icon_SM.png $(1)/share/rygel/xml
 
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/rygel.init $(1)/etc/init.d/rygel

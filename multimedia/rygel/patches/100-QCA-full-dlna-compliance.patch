@@ -1542,12 +1542,12 @@
 +	<device>
 +		<presentationURL></presentationURL>
 +		<deviceType>urn:schemas-upnp-org:device:MediaRenderer:1</deviceType>
-+		<friendlyName>Qualcomm Atheros Renderer</friendlyName>
++		<friendlyName>Skifta Audio Module</friendlyName>
 +		<manufacturer>Qualcomm Atheros</manufacturer>
 +		<manufacturerURL>http://www.atheros.com</manufacturerURL>
-+		<modelName>Qualcomm Atheros Renderer</modelName>
++		<modelName>Skifta Audio Module</modelName>
 +		<modelNumber>1.0</modelNumber>
-+		<modelDescription>Qualcomm Atheros Renderer</modelDescription>
++		<modelDescription>Skifta Audio Module</modelDescription>
 +		<modelURL>http://www.atheros.com</modelURL>
 +		<UDN></UDN>
 +		<serviceList>
@@ -1564,28 +1564,28 @@
 +				<width>48</width>
 +				<height>48</height>
 +				<depth>24</depth>
-+				<url>xml/qca_icon_SM.jpg</url>
++				<url>xml/Skifta_icon_SM.jpg</url>
 +			</icon>
 +			<icon>
 +				<mimetype>image/jpeg</mimetype>
 +				<width>120</width>
 +				<height>120</height>
 +				<depth>24</depth>
-+				<url>xml/qca_icon_LRG.jpg</url>
++				<url>xml/Skifta_icon_LRG.jpg</url>
 +			</icon>
 +			<icon>
 +				<mimetype>image/png</mimetype>
 +				<width>48</width>
 +				<height>48</height>
 +				<depth>24</depth>
-+				<url>xml/qca_icon_SM.png</url>
++				<url>xml/Skifta_icon_SM.png</url>
 +			</icon>
 +			<icon>
 +				<mimetype>image/png</mimetype>
 +				<width>120</width>
 +				<height>120</height>
 +				<depth>24</depth>
-+				<url>xml/qca_icon_LRG.png</url>
++				<url>xml/Skifta_icon_LRG.png</url>
 +			</icon>
 +		</iconList>
 +	</device>
