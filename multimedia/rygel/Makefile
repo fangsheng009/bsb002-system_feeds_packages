@@ -111,6 +111,9 @@ define Package/rygel/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/rygel.init $(1)/etc/init.d/rygel
 
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(CP) ./files/rygel.hotplug $(1)/etc/hotplug.d/iface/30-rygel
+
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/$(PKG_NAME).config $(1)/etc/config/$(PKG_NAME)
 endef

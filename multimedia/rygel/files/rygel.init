@@ -1,14 +1,14 @@
 #!/bin/sh /etc/rc.common
 
-START=61
-SERVICE_DAEMONIZE=1
+START=
+SERVICE_USE_PID=1
+unset SERVICE_MATCH_EXEC
 
 start() {
 	include /lib/network
 	scan_interfaces
 
 	config_load rygel
-
 	# Do nothing if rygel is disabled in config
 	local rygel_enable
 	config_get rygel_enable config "enabled"
@@ -18,71 +18,10 @@ start() {
 		return 0
 	}
 
-	# Wait until the network is setup (done by hotplug2)
-	# If not, gmediarender will fail when registering to Multicast address
-	while ! ifconfig br-lan 2>/dev/null 1>&2; do sleep 1;done
-
-	# Restart dbus
-	COUNTER=0
-	while [ 1 ]; do
-		if [ ! -f "/var/run/dbus.pid" ]; then
-			echo "wait until dbus start..."
-			COUNTER=$(($COUNTER+1))
-			if [ $COUNTER -eq 10 ]; then
-				break;
-			fi
-			sleep 1
-		else
-			break;
-		fi
-	done
-	echo "restart dbus daemon..."
-	rm -rf /var/run/dbus.pid
-	killall dbus-daemon
-	echo "starting dbus daemon (session)..."
-	COUNTER=0
-	dbus-daemon --session --print-address --nofork > /var/temp.txt &
-	while [ 1 ]; do
-		DBUS_SESSION_BUS_ADDRESS=`grep guid /var/temp.txt`
-		if [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; then
-			echo "got bus address= $DBUS_SESSION_BUS_ADDRESS"
-			export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS
-			break;
-		else
-			echo "wait until have a bus address"
-			COUNTER=$(($COUNTER+1))
-			if [ $COUNTER -eq 10 ]; then
-				echo "ERROR: Could not start dbus-daemon"
-				exit 1
-			fi
-			sleep 1
-		fi
-	done
-	rm /var/temp.txt > /dev/null 2>&1
-	
-	echo "starting dbus daemon (system) ..."
-	dbus-daemon --system --print-address --nofork > /var/temp2.txt &
-	COUNTER=0
-	while [ 1 ]; do
-		DBUS_SYSTEM_BUS_ADDRESS=`grep guid /var/temp2.txt`
-		if [ -n "$DBUS_SYSTEM_BUS_ADDRESS" ]; then
-			echo "got bus address= $DBUS_SYSTEM_BUS_ADDRESS"
-			export DBUS_SYSTEM_BUS_ADDRESS=$DBUS_SYSTEM_BUS_ADDRESS
-			break;
-		else
-			echo "wait until have a bus address"
-			COUNTER=$(($COUNTER+1))
-			if [ $COUNTER -eq 10 ]; then
-				echo "ERROR: Could not start dbus-daemon"
-				exit 1
-			fi
-			sleep 1
-		fi	
-	done
-	rm /var/temp2.txt > /dev/null 2>&1
-
-	# Start the daemon
-	eval service_start /usr/bin/rygel -g 5
+	eval $(service_start /usr/bin/dbus-launch)
+	echo ${DBUS_SESSION_BUS_PID} > /var/run/rygel.pid
+	export DBUS_SESSION_BUS_PID DBUS_SESSION_BUS_ADDRESS
+	start-stop-daemon -S -b -x /usr/bin/rygel -- -g 5
 }
 
 stop() {
