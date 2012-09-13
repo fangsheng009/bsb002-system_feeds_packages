@@ -1,0 +1,66 @@
+diff -Nur a/xrelayd.c b/xrelayd.c
+--- a/xrelayd.c	2012-06-19 15:14:21.363126171 +0800
++++ b/xrelayd.c	2012-06-19 15:59:56.948462774 +0800
+@@ -336,7 +336,9 @@
+ }
+ void proxy_connection(
+     int client_fd, char* srv_host, int srv_port,
+-    x509_cert *cert, rsa_context *key)
++    x509_cert *cert,
++    x509_cert *own_cert,
++    rsa_context *key)
+ {
+     int     ret;
+     
+@@ -373,7 +375,7 @@
+ 	{
+     	ssl_set_authmode( &ssl, SSL_VERIFY_NONE);
+ 	}
+-    //ssl_set_dbg(&ssl,xrelay_print,NULL);
++    ssl_set_dbg(&ssl,xrelay_print,NULL);
+     /* random number generation */
+     havege_state hs;
+     havege_init( &hs );
+@@ -388,8 +390,8 @@
+     /* ciphers */
+     ssl_set_ciphers( &ssl, xrly_ciphers );
+     
+-    if(cert && key) {
+-        ssl_set_own_cert( &ssl, cert, key );
++    if(own_cert && key) {
++        ssl_set_own_cert( &ssl, own_cert, key );
+     }
+     
+     /* session caching */
+@@ -620,6 +622,7 @@
+     }
+ 
+     x509_cert       cert,* pcert =NULL;
++    x509_cert       own_cert,* own_pcert =NULL;
+     rsa_context     key,* pkey =NULL;
+     int             ret;
+     
+@@ -633,6 +636,14 @@
+             goto fail;
+         }
+ 		pkey = &key;
++        memset(&own_cert, 0, sizeof(x509_cert));
++        ILOG("Loading the own cert");
++        ret = x509parse_crtfile(&own_cert, keyfile);
++        if(0 == ret)
++        {
++            ILOG("Loading the own cert successfully!");
++            own_pcert = &own_cert;
++        }
+         #else  // if OPTION_LOADKEYS()
+         ELOG("Not compiled for key/cert loading.");
+         goto fail;
+@@ -664,7 +675,7 @@
+     /* In this program, we immediately do one connection and then
+     *  terminate when that connection is broken (or if fd 0 is closed).
+     */
+-    proxy_connection(client_fd,dst_host,dst_port,pcert,pkey);
++    proxy_connection(client_fd,dst_host,dst_port,pcert,own_pcert,pkey);
+ 
+ succeed: 
+     status=0;
