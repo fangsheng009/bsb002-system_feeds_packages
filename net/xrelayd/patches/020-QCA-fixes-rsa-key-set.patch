@@ -1,0 +1,28 @@
+diff -Nur a/xrelayd.c b/xrelayd.c
+--- a/xrelayd.c	2012-06-18 13:19:27.723126197 +0800
++++ b/xrelayd.c	2012-06-18 13:20:04.427375639 +0800
+@@ -366,6 +366,7 @@
+     /* FIXME: verify hook for client connections. */
+ 	if(cert)
+ 	{
++        ssl_set_ca_chain( &ssl, cert, NULL );
+     	ssl_set_authmode( &ssl, SSL_VERIFY_REQUIRED);
+ 	}
+ 	else
+@@ -388,7 +389,6 @@
+     ssl_set_ciphers( &ssl, xrly_ciphers );
+     
+     if(cert && key) {
+-        ssl_set_ca_chain( &ssl, cert, NULL );
+         ssl_set_own_cert( &ssl, cert, key );
+     }
+     
+@@ -664,7 +664,7 @@
+     /* In this program, we immediately do one connection and then
+     *  terminate when that connection is broken (or if fd 0 is closed).
+     */
+-    proxy_connection(client_fd,dst_host,dst_port,pcert,&key);
++    proxy_connection(client_fd,dst_host,dst_port,pcert,pkey);
+ 
+ succeed: 
+     status=0;
