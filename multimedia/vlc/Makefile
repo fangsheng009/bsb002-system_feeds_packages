@@ -26,7 +26,7 @@ define Package/vlc
   TITLE:=Audio player
   URL:=http://www.videolan.org/vlc/
   DEPENDS+= +glib2 +libpthread +libmad +libfaad2 +librt +alsa-lib +libid3tag \
-	+libstdcpp +libflac +libmpeg2 +libogg +ffmpeg-old
+	+libstdcpp +libflac +libmpeg2 +libogg +ffmpeg-old +libvorbisidec
 endef
 
 
@@ -60,7 +60,7 @@ CONFIGURE_ARGS+= \
 	--disable-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
-	--enable-debug \
+	--disable-debug \
 	--disable-gprof \
 	--disable-cprof \
 	--disable-mmx \
@@ -106,7 +106,7 @@ CONFIGURE_ARGS+= \
 	--disable-vcd \
 	--disable-dvb \
 	--disable-screen \
-	--disable-ogg \
+	--enable-ogg \
 	--disable-mkv \
 	--disable-mod \
 	--disable-mpc \
@@ -129,7 +129,7 @@ CONFIGURE_ARGS+= \
 	--enable-flac \
 	--enable-libmpeg2 \
 	--disable-vorbis \
-	--disable-tremor \
+	--enable-tremor \
 	--disable-speex \
 	--disable-tarkin \
 	--disable-theora \

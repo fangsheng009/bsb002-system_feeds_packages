@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libvorbisidec
-PKG_VERSION:=1.0.2+svn14261
+PKG_VERSION:=1.0.2+svn18153
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).orig.tar.gz
 PKG_SOURCE_URL:=http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/
-PKG_MD5SUM:=bc617d4af1cd74b38d7c51451dd6eff0
+PKG_MD5SUM:=4190859414c5d6760e316b5cf00fe7c5
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -25,6 +25,7 @@ define Package/libvorbisidec
   CATEGORY:=Libraries
   TITLE:=A fixed-point Ogg/Vorbis decoder library
   URL:=http://wiki.xiph.org/index.php/Tremor
+  DEPENDS:=+libogg
 endef
 
 define Package/libvorbisidec/description
