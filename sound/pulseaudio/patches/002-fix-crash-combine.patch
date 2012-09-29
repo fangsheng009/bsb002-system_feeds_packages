@@ -1,0 +1,53 @@
+From 0006d3e8009dfc0f74a235848e49af161030a43d Mon Sep 17 00:00:00 2001
+From: Tanu Kaskinen <tanuk@iki.fi>
+Date: Thu, 20 Sep 2012 09:18:39 +0300
+Subject: [PATCH] combine: Keep the timer active in the null mode only when
+ running.
+
+Previously thread_func() used PA_SINK_IS_OPENED() to check whether
+some data should be rendered. process_render_null() used a different
+check: it would return immediately if the sink was not in the RUNNING
+state. This caused a busy loop when the sink was in the IDLE state,
+because process_render_null() didn't update the timestamp, and
+thread_func() still kept the timer active using the old timestamp.
+pa_rtpoll_run() would return immediately because of the old timestamp.
+
+This is fixed by using the same check in both thread_func() and
+process_render_null(). Since the checks are the same, it's actually
+redundant to have the check in process_render_null(), so it is now an
+assertion.
+
+BugLink: https://bugs.freedesktop.org/show_bug.cgi?id=54779
+---
+ src/modules/module-combine-sink.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/src/modules/module-combine-sink.c b/src/modules/module-combine-sink.c
+index dec2279..1afdc12 100644
+--- a/src/modules/module-combine-sink.c
++++ b/src/modules/module-combine-sink.c
+@@ -257,11 +257,9 @@ static void time_callback(pa_mainloop_api *a, pa_time_event *e, const struct tim
+ 
+ static void process_render_null(struct userdata *u, pa_usec_t now) {
+     size_t ate = 0;
+-    pa_assert(u);
+ 
+-    /* If we are not running, we cannot produce any data */
+-    if (!pa_atomic_load(&u->thread_info.running))
+-        return;
++    pa_assert(u);
++    pa_assert(u->sink->thread_info.state == PA_SINK_RUNNING);
+ 
+     if (u->thread_info.in_null_mode)
+         u->thread_info.timestamp = now;
+@@ -312,7 +310,7 @@ static void thread_func(void *userdata) {
+                 pa_sink_process_rewind(u->sink, 0);
+ 
+         /* If no outputs are connected, render some data and drop it immediately. */
+-        if (PA_SINK_IS_OPENED(u->sink->thread_info.state) && !u->thread_info.active_outputs) {
++        if (u->sink->thread_info.state == PA_SINK_RUNNING && !u->thread_info.active_outputs) {
+             pa_usec_t now;
+ 
+             now = pa_rtclock_now();
+-- 
+1.7.10.4
