@@ -1,9 +1,8 @@
-diff -crBN rygel-0.4.2_ori/src/plugins/gst-renderer/rygel-gst-connection-manager.vala rygel-0.4.2_mod/src/plugins/gst-renderer/rygel-gst-connection-manager.vala
-*** rygel-0.4.2_ori/src/plugins/gst-renderer/rygel-gst-connection-manager.vala	2012-10-05 19:38:16.487657703 +0800
---- rygel-0.4.2_mod/src/plugins/gst-renderer/rygel-gst-connection-manager.vala	2012-10-05 19:41:00.007347495 +0800
+*** rygel-0.4.2/src/plugins/gst-renderer/rygel-gst-connection-manager.vala	2012-11-14 08:53:25.278888602 +0800
+--- rygel-0.4.2_mod/src/plugins/gst-renderer/rygel-gst-connection-manager.vala	2012-11-14 08:52:48.693595643 +0800
 ***************
-*** 46,54 ****
---- 46,58 ----
+*** 46,56 ****
+--- 46,61 ----
                                       "http-get:*:audio/x-wav:*," +
   									"http-get:*:audio/x-vorbis:*," +
                                       "http-get:*:audio/x-vorbis+ogg:*," +
@@ -16,4 +15,7 @@ diff -crBN rygel-0.4.2_ori/src/plugins/gst-renderer/rygel-gst-connection-manager
 + 									"http-get:*:audio/flac:*," +
                                       "http-get:*:audio/x-mod:*," +
   									"http-get:*:audio/x-ac3:*," +
++ 									"http-get:*:audio/mp4a-latm:*," +
                                       "http-get:*:audio/x-m4a:*";
+      }
+  
