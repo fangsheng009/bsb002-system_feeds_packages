@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=yaml
-PKG_VERSION:=0.1.3
+PKG_VERSION:=0.1.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://pyyaml.org/download/libyaml/
-PKG_MD5SUM:=b8ab9064e8e0330423fe640de76608cd
+PKG_MD5SUM:=36c852831d02cf90508c29852361d01b
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
