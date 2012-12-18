@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jansson
-PKG_VERSION:=2.2.1
+PKG_VERSION:=2.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.digip.org/jansson/releases/
-PKG_MD5SUM:=ebf4ebc7af47de27f7b9d79ad5853176
+PKG_MD5SUM:=c4629b89bf0432f3158c461e88fe0113
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -28,6 +28,7 @@ define Package/jansson
 endef
 
 TARGET_CFLAGS += $(FPIC)
+TARGET_LDFLAGS += -lm
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/{lib,include}
