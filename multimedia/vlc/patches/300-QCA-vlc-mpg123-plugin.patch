@@ -1,0 +1,339 @@
+diff -Nur a/AUTHORS b/AUTHORS
+--- a/AUTHORS   2012-12-20 17:50:44.013622831 +0800
++++ b/AUTHORS   2012-12-20 17:51:51.065625197 +0800
+@@ -212,6 +212,11 @@
+ D: IPv6 support
+ S: United Kingdom
+ 
++N: William Hahne
++E: will07c5 at gmail dot com
++D: mpg123 audio filter
++S: USA
++
+ N: Gerald Hansink
+ E: gerald.hansink@ordina.nl
+ D: Qt Embedded Video Output
+diff -Nur a/configure.ac b/configure.ac
+--- a/configure.ac  2012-12-20 17:50:43.773622823 +0800
++++ b/configure.ac  2012-12-21 13:38:03.204083091 +0800
+@@ -2989,6 +2989,24 @@
+ fi
+
+ dnl
++dnl  mpg123 plugin
++dnl
++AC_ARG_ENABLE(mpg123,
++          [  --enable-mpg123            libmpg123 module (default enabled)])
++if test "${enable_mpg123}" != "no"
++then
++    CPPFLAGS="${CPPFLAGS_save} ${CPPFLAGS_mpglayer123}"
++    LDFLAGS="${LDFLAGS_save} ${LIBS_mpglayer123}"
++    AC_CHECK_HEADERS(mpg123.h, ,
++      [ AC_MSG_ERROR([Could not find libmpg123 on your system,Alternatively you can use --disable-mpg123 to disable the mpg123 plugin.]) ])
++    AC_CHECK_LIB(mpg123, mpg123_init, [
++      VLC_ADD_PLUGIN([mpglayer123])
++      VLC_ADD_LIBS([mpglayer123],[-lmpg123])],
++      [ AC_MSG_ERROR([Cannot find mpg123 library...]) ])
++    CPPFLAGS="${CPPFLAGS_save}"
++    LDFLAGS="${LDFLAGS_save}"
++fi
++dnl
+ dnl   libid3tag support (FIXME!!! doesn't work with new input)
+ dnl
+ AC_ARG_ENABLE( id3tag,
+diff -Nur a/modules/audio_filter/converter/Makefile.am vlc-0.9.9/modules/audio_filter/converter/Makefile.am
+--- a/modules/audio_filter/converter/Makefile.am    2009-03-24 07:25:51.000000000 +0800
++++ vlc-0.9.9/modules/audio_filter/converter/Makefile.am    2012-12-21 14:29:40.888192359 +0800
+@@ -3,9 +3,9 @@
+
+ basedir = audio_filter
+ dir = audio_filter/converter
+-mods = a52tofloat32 a52tospdif converter_fixed converter_float dtstofloat32 dtstospdif mpgatofixed32
+-libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBa52tospdif) $(LTLIBconverter_fixed) $(LTLIBconverter_float) $(LTLIBdtstofloat32) $(LTLIBdtstospdif) $(LTLIBmpgatofixed32)
+-EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la liba52tospdif_plugin.la libconverter_fixed_plugin.la libconverter_float_plugin.la libdtstofloat32_plugin.la libdtstospdif_plugin.la libmpgatofixed32_plugin.la
++mods = a52tofloat32 a52tospdif converter_fixed converter_float dtstofloat32 dtstospdif mpgatofixed32 mpglayer123
++libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBa52tospdif) $(LTLIBconverter_fixed) $(LTLIBconverter_float) $(LTLIBdtstofloat32) $(LTLIBdtstospdif) $(LTLIBmpgatofixed32) $(LTLIBmpglayer123)
++EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la liba52tospdif_plugin.la libconverter_fixed_plugin.la libconverter_float_plugin.la libdtstofloat32_plugin.la libdtstospdif_plugin.la libmpgatofixed32_plugin.la libmpglayer123_plugin.la
+
+ include $(top_srcdir)/modules/common.am
+
+@@ -74,6 +74,16 @@
+ # Set LIBADD and DEPENDENCIES manually:
+ libdtstospdif_plugin_la_LIBADD = $(AM_LIBADD)
+ libdtstospdif_plugin_la_DEPENDENCIES =
++#Set libmpglayer123 manually
++libmpglayer123_plugin_la_SOURCES=$(SOURCES_mpglayer123)
++nodist_libmpglayer123_plugin_la_SOURCES=$(nodist_SOURCES_mpglayer123)
++# Force per-target objects:
++libmpglayer123_plugin_la_CFLAGS = $(AM_CFLAGS)
++libmpglayer123_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
++libmpglayer123_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
++# Set LIBADD and DEPENDENCIES manually:
++libmpglayer123_plugin_la_LIBADD = $(AM_LIBADD)
++libmpglayer123_plugin_la_DEPENDENCIES =
+
+ # The mpgatofixed32 plugin
+ libmpgatofixed32_plugin_la_SOURCES = $(SOURCES_mpgatofixed32)
+diff -Nur a/modules/audio_filter/converter/Modules.am b/modules/audio_filter/converter/Modules.am
+--- a/modules/audio_filter/converter/Modules.am 2008-08-25 20:52:18.000000000 +0800
++++ b/modules/audio_filter/converter/Modules.am 2012-12-20 17:53:06.749627866 +0800
+@@ -5,3 +5,4 @@
+ SOURCES_dtstospdif = dtstospdif.c
+ SOURCES_dtstofloat32 = dtstofloat32.c
+ SOURCES_mpgatofixed32 = mpgatofixed32.c
++SOURCES_mpglayer123 = mpglayer123.c
+diff -Nur a/modules/audio_filter/converter/mpglayer123.c b/modules/audio_filter/converter/mpglayer123.c
+--- a/modules/audio_filter/converter/mpglayer123.c  1970-01-01 08:00:00.000000000 +0800
++++ b/modules/audio_filter/converter/mpglayer123.c  2012-12-24 16:45:56.493028652 +0800
+@@ -0,0 +1,251 @@
++/*****************************************************************************
++ * mpglayer123.c: MPEG-1 & 2 audio layer I, II, III + MPEG 2.5
++ * decoder, using MPG123
++ *****************************************************************************
++ * Copyright (C) 2001-2010 the VideoLAN team
++ * $Id$
++ *
++ * Authors: Christophe Massiot <massiot@via.ecp.fr>
++ *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
++ *****************************************************************************/
++
++/*****************************************************************************
++ * Preamble
++ *****************************************************************************/
++
++#include <mpg123.h>
++
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++#include <assert.h>
++
++#include <vlc_common.h>
++#include <vlc_plugin.h>
++#include <vlc_aout.h>
++#include <vlc_block.h>
++#include <vlc_filter.h>
++
++/*****************************************************************************
++ * Local prototypes
++ *****************************************************************************/
++static int  OpenFilter ( vlc_object_t * );
++static void CloseFilter( vlc_object_t * );
++static block_t *Convert( filter_t *, block_t * );
++
++/*****************************************************************************
++ * Local structures
++ *****************************************************************************/
++struct filter_sys_t
++{
++    mpg123_handle * p_handle;
++    unsigned char * p_buffer;
++
++    off_t           i_offset;
++    int             i_reject_count;
++    size_t          i_size;
++};
++
++/*****************************************************************************
++ * Module descriptor
++ *****************************************************************************/
++vlc_module_begin ()
++    set_category( CAT_INPUT )
++    set_subcategory( SUBCAT_INPUT_ACODEC )
++    set_description( N_("MPEG audio decoder using mpg123") )
++    set_capability( "audio filter", 123 )
++    set_callbacks( OpenFilter, CloseFilter )
++vlc_module_end ()
++
++/*****************************************************************************
++ * DoWork: decode an MPEG audio frame.
++ *****************************************************************************/
++static void DoWork( filter_t * p_filter,
++                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
++{
++    filter_sys_t *p_sys = p_filter->p_sys;
++
++    p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
++    p_out_buf->i_nb_bytes = p_in_buf->i_nb_samples * sizeof(vlc_fixed_t) *
++                               aout_FormatNbChannels( &p_filter->fmt_out.audio );
++
++
++    /* Need to remove last 8 bytes due to a hack for libmad. */
++    if ( p_in_buf->i_nb_bytes - 8 < 0 )
++        return;
++    int i_err = mpg123_feed( p_sys->p_handle, p_in_buf->p_buffer,
++                                   p_in_buf->i_nb_bytes - 8 );
++
++    /* Do the actual decoding now. */
++    if ( i_err != MPG123_OK || mpg123_decode_frame( p_sys->p_handle, &p_sys->i_offset, 
++         &p_sys->p_buffer, &p_sys->i_size ) != MPG123_OK )
++    {
++        msg_Dbg( p_filter, "libmpg123 error: %s",
++                 mpg123_strerror( p_sys->p_handle ) );
++        p_sys->i_reject_count = 3;
++    }
++    else if( p_in_buf->b_discontinuity  )
++    { 
++        p_sys->i_reject_count = 3;
++    }
++
++    if( p_sys->i_reject_count > 0 )
++    {
++        if( p_filter->fmt_out.audio.i_format == VLC_FOURCC('f','l','3','2') )
++        {
++            int i;
++            int i_size = p_out_buf->i_nb_bytes / sizeof(float);
++
++            float * a = (float *)p_out_buf->p_buffer;
++            for ( i = 0 ; i < i_size ; i++ )
++                *a++ = 0.0;
++        }
++        else
++        {
++            memset( p_out_buf->p_buffer, 0, p_out_buf->i_nb_bytes );
++        }
++        p_sys->i_reject_count--;
++        return;
++    }
++
++    /* Get number of channels. */
++    int i_channels;
++    mpg123_getformat( p_sys->p_handle, NULL, &i_channels, NULL );
++
++    /* libmpg123 outputs 16bit samples. */
++    unsigned int i_samples = p_sys->i_size / 2;
++
++    assert( i_samples / i_channels == p_out_buf->i_nb_samples );
++    if ( p_filter->fmt_out.audio.i_format == VLC_FOURCC('f','i','3','2') )
++    {
++        /* Convert signed int16 to signed int32.*/
++        vlc_fixed_t * p_samples = (vlc_fixed_t *)p_out_buf->p_buffer;
++
++        while ( i_samples-- )
++        {
++            *p_samples++ = (*(int16_t *)p_sys->p_buffer) << 16;
++            p_sys->p_buffer += 2;
++        }
++    }
++    else
++    {
++        /* Convert signed int16 to float32. */
++        float * p_samples = (float *)p_out_buf->p_buffer;
++        const float f_temp = (float)0x8000;
++
++        while ( i_samples-- )
++        {
++            *p_samples++ = (float)*(int16_t *)p_sys->p_buffer / f_temp;
++            p_sys->p_buffer += 2;
++        }
++    }
++}
++
++/*****************************************************************************
++ * OpenFilter:
++ *****************************************************************************/
++static int OpenFilter( vlc_object_t *p_this )
++{
++    filter_t *p_filter = (filter_t *)p_this;
++    filter_sys_t *p_sys;
++
++    if( p_filter->fmt_in.i_codec != VLC_FOURCC('m','p','g','a') &&
++        p_filter->fmt_in.i_codec != VLC_FOURCC('m','p','g','3') )
++        return VLC_EGENERIC;
++    if( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
++        return VLC_EGENERIC;
++
++    /* Allocate the memory needed to store the module's structure */
++    p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );
++    if( p_sys == NULL )
++        return VLC_EGENERIC;
++    p_sys->i_reject_count = 0;
++
++    p_filter->pf_audio_filter = Convert;
++
++    /* Initialize libmpg123 */
++    if ( mpg123_init() != MPG123_OK ||
++         (p_sys->p_handle = mpg123_new( NULL, NULL )) == NULL ||
++         mpg123_open_feed( p_sys->p_handle ) != MPG123_OK )
++    {
++        free( p_sys );
++        return VLC_EGENERIC;
++    }
++    mpg123_param( p_sys->p_handle, MPG123_ADD_FLAGS, MPG123_NO_RESYNC, 0 );
++    if( vlc_CPU() & CPU_CAPABILITY_FPU )
++        p_filter->fmt_out.i_codec = VLC_FOURCC('f','l','3','2');
++    else
++        p_filter->fmt_out.i_codec = VLC_FOURCC('f','i','3','2');
++ 
++    p_filter->fmt_out.audio.i_format = p_filter->fmt_out.i_codec;
++    p_filter->fmt_out.audio.i_bitspersample =
++        aout_BitsPerSample( p_filter->fmt_out.i_codec );
++
++    msg_Dbg( p_this, "%4.4s->%4.4s, bits per sample: %i",
++             (char *)&p_filter->fmt_in.i_codec,
++             (char *)&p_filter->fmt_out.i_codec,
++             p_filter->fmt_in.audio.i_bitspersample );
++
++    return VLC_SUCCESS;
++}
++
++/*****************************************************************************
++ * CloseFilter : deallocate data structures
++ *****************************************************************************/
++static void CloseFilter( vlc_object_t *p_this )
++{
++    filter_t *p_filter = (filter_t *)p_this;
++    filter_sys_t *p_sys = p_filter->p_sys;
++
++    mpg123_close( p_sys->p_handle );
++    mpg123_delete( p_sys->p_handle );
++    mpg123_exit();
++    free( p_sys );
++}
++
++static block_t *Convert( filter_t *p_filter, block_t *p_block )
++{
++    if( !p_block || !p_block->i_samples )
++    {
++        if( p_block )
++            block_Release( p_block );
++        return NULL;
++    }
++
++    size_t i_out_size = p_block->i_samples *
++      p_filter->fmt_out.audio.i_bitspersample *
++        p_filter->fmt_out.audio.i_channels / 8;
++
++    block_t *p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
++    if( !p_out )
++    {
++        msg_Warn( p_filter, "can't get output buffer" );
++        block_Release( p_block );
++        return NULL;
++    }
++
++    p_out->i_samples = p_block->i_samples;
++    p_out->i_dts = p_block->i_dts;
++    p_out->i_pts = p_block->i_pts;
++    p_out->i_length = p_block->i_length;
++
++    DoWork( p_filter, p_block, p_out );
++
++    block_Release( p_block );
++
++    return p_out;
++}
