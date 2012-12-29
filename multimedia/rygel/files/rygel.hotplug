@@ -11,6 +11,8 @@ case "$ACTION" in
 		config_get rygel_iface config interface
 
 		if [ "$rygel_iface" = "$INTERFACE" ]; then
+			[ -x /etc/init.d/avahi-daemon ] && \
+				/etc/init.d/avahi-daemon restart
 			/etc/init.d/rygel start
 		fi
 	;;
