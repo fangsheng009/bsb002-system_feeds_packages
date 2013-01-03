@@ -194,7 +194,7 @@ define Build/Compile
 			'-sBUILD=release <optimization>space <inlining>on <debug-symbols>off' \
 			$(filter -j%,$(PKG_JOBS)) \
 			--toolset=gcc-$(ARCH) --build-type=minimal --layout=system \
-			--disable-long-double \
+			--disable-long-double target-os=linux \
 			$(CONFIGURE_ARGS) \
 			$(if $(CONFIG_PACKAGE_boost-chrono),,--without-chrono) \
 			$(if $(CONFIG_PACKAGE_boost-date_time),,--without-date_time) \
