@@ -56,7 +56,7 @@ define Build/InstallDev
 		$(1)/usr/lib/pkgconfig
 endef
 define Package/libmpg123/install
-	$(INSTALL_DIR) $(1)/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/libmpg123.so* $(1)/usr/lib/
 endef
 
