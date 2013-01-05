@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ffmpeg
-PKG_VERSION:=0.8.7
+PKG_VERSION:=1.0.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://ffmpeg.org/releases/
-PKG_MD5SUM:=31da4d5610d7138761e23fab8fe3a84d
+PKG_MD5SUM:=dbbb88ce5525dea22b24aaa098a9bcc2
 
 FFMPEG_CUSTOM_ENCODERS:= \
 	ac3 \
@@ -28,7 +28,7 @@ FFMPEG_CUSTOM_ENCODERS:= \
 	zlib \
 
 FFMPEG_CUSTOM_DECODERS:= \
-	aac \
+	libfdk-aac \
 	ac3 \
 	atrac3 \
 	flac \
@@ -94,7 +94,7 @@ FFMPEG_CUSTOM_PROTOCOLS:= \
 FFMPEG_MINI_ENCODERS:= \
 
 FFMPEG_MINI_DECODERS:= \
-	aac \
+	libfdk-aac \
 	ac3 \
 	atrac3 \
 	flac \
@@ -242,7 +242,7 @@ endef
 define Package/libffmpeg-full
 $(call Package/libffmpeg/Default)
  TITLE+= (full)
- DEPENDS+= @BUILD_PATENTED +alsa-lib
+ DEPENDS+= @BUILD_PATENTED +alsa-lib +fdk-aac
  VARIANT:=full
 endef
 
@@ -283,16 +283,19 @@ FFMPEG_CONFIGURE:= \
 	\
 	--enable-gpl \
 	--enable-version3 \
+	--enable-nonfree \
 	\
 	--disable-asm \
+	--disable-mipsfpu \
 	--disable-doc \
 	--disable-dxva2 \
 	--enable-pthreads \
-	--disable-optimizations \
 	--enable-small \
 	--disable-stripping \
 	--enable-zlib \
-	--disable-outdevs
+	--disable-outdevs \
+	--disable-decoder=aac \
+	--enable-libfdk-aac
 
 ifeq ($(BUILD_VARIANT),custom)
 
@@ -418,7 +421,7 @@ endef
 
 define Package/libffmpeg-full/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{avcodec,avdevice,avfilter,avformat,avutil,postproc,swscale}.so.* $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib{avcodec,avdevice,avfilter,avformat,avutil,postproc,swresample,swscale}.so.* $(1)/usr/lib/
 endef
 
 Package/libffmpeg-mini/install = $(Package/libffmpeg-custom/install)
