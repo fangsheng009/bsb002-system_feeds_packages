@@ -10,7 +10,7 @@
  GUPNP_VALA_REQUIRED=0.6
  DBUS_GLIB_REQUIRED=0.74
 -GSTREAMER_REQUIRED=0.10.23
-+VLC_REQUIRED=0.9.9
++VLC_REQUIRED=2.0.5
  GIO_REQUIRED=2.16
  GEE_REQUIRED=0.3.0
  UUID_REQUIRED=1.41.3
@@ -1092,12 +1092,13 @@
 +EXTRA_DIST = $(BUILT_SOURCES) owl-audio-player.vapi
 --- /dev/null
 +++ b/src/plugins/gst-renderer/owl-audio-player.c
-@@ -0,0 +1,906 @@
+@@ -0,0 +1,858 @@
 +/*
 + * owl-audio-player.c
 + *   A GObject based wrapper for vlc media player
 + *
 + * (C) Copyright 2010, Ubicom, Inc.
++ * (C) Copyright 2012, Qualcomm Atheros, Inc.
 + *
 + * This file is part of the Ubicom32 Rygel.
 + *
@@ -1131,7 +1132,6 @@
 +	libvlc_instance_t * pVLCInstance;
 +	libvlc_media_player_t * pMediaPlayer;
 +	libvlc_event_manager_t * pEvtManager;
-+	libvlc_exception_t VLCex;
 +
 +	char *uri;
 +	char *protocol_info;
@@ -1169,16 +1169,6 @@
 +#define VLC_VOL_DEFAULT 50.0
 +#define VLC_VOL_MAX     200.0
 +#define VLC_VOL_MUTE_DEFAULT FALSE
-+
-+static void
-+process_vlc_exception(libvlc_exception_t* ex)
-+{
-+	if(libvlc_exception_raised(ex))
-+	{
-+		g_warning("vlc exception: %s", libvlc_exception_get_message(ex));
-+		libvlc_exception_clear(ex);
-+	}
-+}
 +
 +/**
 + * Player playing media.
@@ -1272,56 +1262,43 @@
 +                                             OwlAudioPlayerPrivate);
 +
 +	const char * const vlc_args[] = {
-+		"-I", "dummy", "--ipv4-timeout=60000",     // No special interface
-+		"--http-dlna",     // Enable dlna in HTTP
++		"-I", "dummy",
++		"--ipv4-timeout=60000",     // No special interface
 +		"--http-reconnect",// Try to reconnect when connection is lost
-+		"--ignore-config", // Don't use VLC's config
-+		"--plugin-path=./plugins" };
++		"--ignore-config" // Don't use VLC's config
++		};
 +
 +	libvlc_instance_t * pVLCInstance = NULL;
 +	libvlc_media_player_t * pMediaPlayer = NULL;
 +	libvlc_event_manager_t * pEvtManager = NULL;
-+	libvlc_exception_t *pVLCex = &audio_player->priv->VLCex;
-+
-+	// init the exception object.
-+	libvlc_exception_init (pVLCex);
 +
 +	// init vlc modules, should be done only once
-+	pVLCInstance = libvlc_new (sizeof(vlc_args) / sizeof(vlc_args[0]), vlc_args, pVLCex);
-+	process_vlc_exception(pVLCex);
++	pVLCInstance = libvlc_new (sizeof(vlc_args) / sizeof(vlc_args[0]), vlc_args);
++	g_assert(pVLCInstance);
 +
 +	// Create a media player playing environement
-+	pMediaPlayer = libvlc_media_player_new(pVLCInstance, pVLCex);
-+	process_vlc_exception(pVLCex);
++	pMediaPlayer = libvlc_media_player_new(pVLCInstance);
++	g_assert(pMediaPlayer);
 +
 +	// Create an event manager for the player for handling e.g. time change events
-+	pEvtManager = libvlc_media_player_event_manager(pMediaPlayer, pVLCex);
-+	process_vlc_exception(pVLCex);
++	pEvtManager = libvlc_media_player_event_manager(pMediaPlayer);
 +
 +	libvlc_event_attach(pEvtManager,
 +	                    libvlc_MediaPlayerEndReached,
 +	                    vlc_eos_cb,
-+	                    audio_player,
-+	                    pVLCex);
-+	process_vlc_exception(pVLCex);
++	                    audio_player);
 +	libvlc_event_attach(pEvtManager,
 +	                    libvlc_MediaPlayerEncounteredError,
 +	                    vlc_error_cb,
-+	                    audio_player,
-+	                    pVLCex);
-+	process_vlc_exception(pVLCex);
++	                    audio_player);
 +	libvlc_event_attach(pEvtManager,
 +	                    libvlc_MediaPlayerPaused,
 +	                    vlc_media_player_paused_cb,
-+	                    audio_player,
-+	                    pVLCex);
-+	process_vlc_exception(pVLCex);
++	                    audio_player);
 +	libvlc_event_attach(pEvtManager,
 +	                    libvlc_MediaPlayerPlaying,
 +	                    vlc_media_player_playing_cb,
-+	                    audio_player,
-+	                    pVLCex);
-+	process_vlc_exception(pVLCex);
++	                    audio_player);
 +
 +	audio_player->priv->pVLCInstance = pVLCInstance;
 +	audio_player->priv->pMediaPlayer = pMediaPlayer;
@@ -1435,7 +1412,6 @@
 +		libvlc_release (audio_player->priv->pVLCInstance);
 +	        audio_player->priv->pVLCInstance = NULL;
 +	}
-+
 +
 +	object_class = G_OBJECT_CLASS (owl_audio_player_parent_class);
 +	object_class->dispose (object);
@@ -1704,8 +1680,7 @@
 +		return;
 +	}
 +
-+	libvlc_media_player_pause(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_media_player_pause(audio_player->priv->pMediaPlayer);
 +}
 +
 +/**
@@ -1726,8 +1701,7 @@
 +		return;
 +	}
 +
-+	libvlc_media_player_pause(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_media_player_pause(audio_player->priv->pMediaPlayer);
 +}
 +
 +/**
@@ -1744,8 +1718,7 @@
 +	if (!audio_player->priv->pMediaPlayer)
 +	        return;
 +
-+	libvlc_media_player_stop(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_media_player_stop(audio_player->priv->pMediaPlayer);
 +}
 +
 +/**
@@ -1769,35 +1742,22 @@
 +	}
 +
 +	g_free (audio_player->priv->uri);
-+    audio_player->priv->uri = g_strdup (uri);
-+
-+    /**
-+	 * Set new media.
-+	 **/
-+	libvlc_media_t * pMedia = libvlc_media_new (audio_player->priv->pVLCInstance, uri, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
-+	libvlc_event_attach(libvlc_media_event_manager(pMedia, &audio_player->priv->VLCex),
-+	                    libvlc_MediaDurationChanged,
-+	                    vlc_media_player_duration_changed_cb,
-+	                    audio_player,
-+	                    &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
-+	libvlc_media_player_set_media (audio_player->priv->pMediaPlayer, pMedia, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	audio_player->priv->uri = g_strdup (uri);
 +
 +	/**
-+	 * Set DLNA protocolInfo of the media item
++	 * Set new media.
 +	 **/
-+	if (audio_player->priv->protocol_info) {
-+		libvlc_media_player_set_protocol_info(audio_player->priv->pMediaPlayer, audio_player->priv->protocol_info, &audio_player->priv->VLCex);
-+		process_vlc_exception(&audio_player->priv->VLCex);
-+	}
++	libvlc_media_t * pMedia = libvlc_media_new_location (audio_player->priv->pVLCInstance, uri);
++	libvlc_event_attach(libvlc_media_event_manager(pMedia),
++	                    libvlc_MediaDurationChanged,
++	                    vlc_media_player_duration_changed_cb,
++	                    audio_player);
++	libvlc_media_player_set_media (audio_player->priv->pMediaPlayer, pMedia);
 +
 +	/**
 +	 * Play media
 +	 **/
-+	libvlc_media_player_play(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_media_player_play(audio_player->priv->pMediaPlayer);
 +
 +	/**
 +	 * Reset properties.
@@ -1820,8 +1780,7 @@
 +	if (!audio_player->priv->pMediaPlayer)
 +	        return FALSE;
 +
-+	libvlc_state_t state = libvlc_media_player_get_state(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_state_t state = libvlc_media_player_get_state(audio_player->priv->pMediaPlayer);
 +
 +	switch (state) {
 +	case libvlc_Opening:
@@ -1860,8 +1819,7 @@
 +	}
 +
 +	libvlc_time_t time_in_mseconds = time_in_seconds * 1000;
-+	libvlc_media_player_set_time(audio_player->priv->pMediaPlayer, time_in_mseconds, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_media_player_set_time(audio_player->priv->pMediaPlayer, time_in_mseconds);
 +	g_debug("%p: New time is %lld", audio_player, time_in_mseconds);
 +}
 +
@@ -1879,8 +1837,7 @@
 +	if (!audio_player->priv->pMediaPlayer)
 +	        return -1;
 +
-+	libvlc_time_t time_in_mseconds = libvlc_media_player_get_time(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_time_t time_in_mseconds = libvlc_media_player_get_time(audio_player->priv->pMediaPlayer);
 +
 +	return time_in_mseconds / 1000;
 +}
@@ -1902,8 +1859,7 @@
 +	if (!audio_player->priv->pVLCInstance)
 +	        return;
 +
-+	libvlc_audio_set_volume(audio_player->priv->pVLCInstance, volume, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_audio_set_volume(audio_player->priv->pMediaPlayer, volume);
 +}
 +
 +/**
@@ -1922,8 +1878,7 @@
 +	if (!audio_player->priv->pVLCInstance)
 +	        return 0.0;
 +
-+	volume = libvlc_audio_get_volume(audio_player->priv->pVLCInstance, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	volume = libvlc_audio_get_volume(audio_player->priv->pMediaPlayer);
 +
 +	return volume;
 +}
@@ -1944,8 +1899,7 @@
 +	if (!audio_player->priv->pVLCInstance)
 +	        return;
 +
-+	libvlc_audio_set_mute(audio_player->priv->pVLCInstance, mute, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	libvlc_audio_set_mute(audio_player->priv->pMediaPlayer, mute);
 +}
 +
 +/**
@@ -1964,8 +1918,7 @@
 +	if (!audio_player->priv->pVLCInstance)
 +	        return FALSE;
 +
-+	mute = libvlc_audio_get_mute(audio_player->priv->pVLCInstance, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	mute = libvlc_audio_get_mute(audio_player->priv->pMediaPlayer);
 +
 +	return mute;
 +}
@@ -1981,8 +1934,7 @@
 +{
 +	g_return_val_if_fail (OWL_IS_AUDIO_PLAYER (audio_player), FALSE);
 +
-+	int is_seekable = libvlc_media_player_is_seekable(audio_player->priv->pMediaPlayer, &audio_player->priv->VLCex);
-+	process_vlc_exception(&audio_player->priv->VLCex);
++	int is_seekable = libvlc_media_player_is_seekable(audio_player->priv->pMediaPlayer);
 +	return is_seekable;
 +}
 +

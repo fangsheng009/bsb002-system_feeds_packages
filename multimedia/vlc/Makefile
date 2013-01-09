@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vlc
-PKG_VERSION:=0.9.9
+PKG_VERSION:=2.0.5
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://download.videolan.org/pub/videolan/vlc/0.9.9/
-PKG_MD5SUM:=b7c2a75194ad5c73979c3d880aebbe38
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=http://download.videolan.org/pub/videolan/vlc/$(PKG_VERSION)
+PKG_MD5SUM:=4f959c0766ada8cea5a72c65fce94ebe
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -45,18 +45,14 @@ CONFIGURE_ARGS+= \
 	--disable-static \
 	--enable-shared \
 	--disable-maintainer-mode \
-	--disable-python-bindings \
-	--disable-java-bindings \
 	--disable-dependency-tracking \
 	--disable-dependency-tracking \
 	--disable-macosx \
 	--without-macosx-sdk \
 	--disable-macosx-audio \
-	--disable-macosx-defaults \
 	--disable-libtool-lock \
 	--disable-nls \
 	--disable-rpath \
-	--disable-hal \
 	--disable-dbus \
 	--disable-dbus-control \
 	--disable-telepathy \
@@ -70,9 +66,7 @@ CONFIGURE_ARGS+= \
 	--disable-optimizations \
 	--disable-run-as-root \
 	--disable-coverage \
-	--disable-release \
 	--disable-sout \
-	--enable-rawaud \
 	--disable-switcher \
 	--disable-shout \
 	--disable-lua \
@@ -81,7 +75,6 @@ CONFIGURE_ARGS+= \
 	--disable-vlm \
 	--disable-growl \
 	--disable-notify \
-	--disable-audioscrobbler \
 	--disable-taglib \
 	--disable-live555 \
 	--disable-dc1394 \
@@ -89,22 +82,15 @@ CONFIGURE_ARGS+= \
 	--disable-dvdread \
 	--disable-dvdnav \
 	--disable-dshow \
-	--disable-bda \
 	--disable-opencv \
 	--disable-smb \
 	--disable-dvbpsi \
-	--disable-v4l \
 	--disable-v4l2 \
-	--disable-libv4l2 \
 	--disable-pvr \
 	--disable-gnomevfs \
-	--disable-libcdio \
-	--disable-cddax \
 	--disable-libcddb \
 	--disable-vcdx \
-	--disable-cdda \
 	--disable-vcd \
-	--disable-dvb \
 	--disable-screen \
 	--enable-ogg \
 	--disable-mkv \
@@ -112,11 +98,9 @@ CONFIGURE_ARGS+= \
 	--disable-mpc \
 	--disable-gme \
 	--enable-mad \
-	--enable-id3tag \
 	--enable-avcodec \
-	--disable-avformat \
+	--enable-avformat \
 	--disable-swscale \
-	--disable-imgresample \
 	--disable-postproc \
 	--enable-faad \
 	--disable-twolame \
@@ -131,7 +115,6 @@ CONFIGURE_ARGS+= \
 	--disable-vorbis \
 	--enable-tremor \
 	--disable-speex \
-	--disable-tarkin \
 	--disable-theora \
 	--disable-dirac \
 	--disable-schroedinger \
@@ -141,15 +124,9 @@ CONFIGURE_ARGS+= \
 	--disable-zvbi \
 	--disable-telx \
 	--disable-libass \
-	--disable-asademux \
-	--disable-cmml \
 	--disable-kate \
-	--disable-x11 \
 	--disable-xvideo \
 	--disable-glx \
-	--disable-xvmc \
-	--disable-xinerama \
-	--disable-opengl \
 	--disable-sdl \
 	--disable-sdl-image \
 	--disable-freetype \
@@ -157,55 +134,35 @@ CONFIGURE_ARGS+= \
 	--disable-fontconfig \
 	--disable-libxml2 \
 	--disable-svg \
-	--disable-snapshot \
-	--disable-qte \
-	--disable-hd1000v \
 	--disable-directx \
-	--disable-fb \
-	--disable-mga \
-	--disable-svgalib \
 	--disable-directfb \
-	--disable-ggi \
 	--disable-aa \
 	--disable-caca \
 	--disable-wingdi \
 	--disable-oss \
-	--disable-esd \
 	--disable-pulse \
 	--disable-portaudio \
-	--disable-arts \
 	--enable-alsa \
 	--disable-waveout \
 	--disable-macosx-audio \
-	--disable-hd1000a \
 	--disable-jack \
-	--disable-cyberlink \
 	--disable-upnp \
 	--disable-skins2 \
-	--disable-pda \
 	--disable-qt4 \
-	--disable-wince \
-	--disable-opie \
 	--disable-macosx \
-	--disable-qnx \
 	--disable-ncurses \
 	--disable-xosd \
 	--disable-fbosd \
 	--disable-visual \
-	--disable-galaktos \
 	--disable-goom \
 	--disable-atmo \
 	--disable-bonjour \
 	--disable-lirc \
 	--disable-libgcrypt \
 	--disable-gnutls \
-	--disable-remoteosd \
 	--disable-update-check \
 	--disable-loader \
 	--enable-vlc \
-	--disable-activex \
-	--disable-mozilla \
-	--disable-testsuite \
 	--with-pic \
 	--with-gnu-ld \
 	--without-libintl-prefix \
@@ -238,6 +195,7 @@ endef
 define Package/vlc/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/vlc $(1)/usr/bin/
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/cvlc $(1)/usr/bin/
 
 	$(INSTALL_DIR) $(1)/usr/lib
 	( cd $(PKG_INSTALL_DIR); $(CP) \
@@ -247,19 +205,18 @@ define Package/vlc/install
 	)
 
 	$(INSTALL_DIR) $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/access $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/access_filter $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/audio_filter $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/audio_mixer $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/audio_output $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/codec $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/control $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/demux $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/gui $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/meta_engine $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/misc $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/packetizer $(1)/usr/lib/vlc
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/services_discovery $(1)/usr/lib/vlc
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/access $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/audio_filter $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/audio_mixer $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/audio_output $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/codec $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/control $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/demux $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/gui $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/meta_engine $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/misc $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/packetizer $(1)/usr/lib/vlc/plugins
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/vlc/plugins/services_discovery $(1)/usr/lib/vlc/plugins
 endef
 
 $(eval $(call BuildPackage,vlc))
