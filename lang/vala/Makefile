@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/
 PKG_MD5SUM:=f2f8b2914361db599fd6392ec27f7042
 
-PKG_BUILD_DEPENDS:=glib2/host vala/host
+PKG_BUILD_DEPENDS:=glib2 vala/host
 HOST_BUILD_DEPENDS:=glib2/host
 
 include $(INCLUDE_DIR)/host-build.mk
@@ -29,6 +29,7 @@ define Package/vala
   SECTION:=lang
   CATEGORY:=Languages
   TITLE:=C-sharp like language for the GObject system
+  DEPENDS:=+glib2
   URL:=http://live.gnome.org/Vala
 endef
 
