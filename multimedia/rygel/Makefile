@@ -11,7 +11,7 @@ PKG_VERSION:=0.4.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://ftp.acc.umu.se/pub/GNOME/sources/rygel/0.4/
+PKG_SOURCE_URL:=http://ftp.acc.umu.se/pub/GNOME/sources/rygel/$(basename $(PKG_VERSION))
 PKG_MD5SUM:=79a33b9875eacdcb22d9d195aaf24028
 
 PKG_BUILD_DEPENDS:=vala/host
@@ -64,6 +64,11 @@ CONFIGURE_ARGS+= \
 	--disable-tracker-plugin \
 	--disable-external-plugin \
 	--enable-gst-renderer-plugin
+
+define rygel_fixup_git_version_gen
+	$(CP) ./files/git-version-gen $(PKG_BUILD_DIR)/build-aux/git-version-gen
+endef
+Hooks/Prepare/Post+=rygel_fixup_git_version_gen
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
