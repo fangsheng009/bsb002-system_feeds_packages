@@ -26,7 +26,7 @@ define Package/vlc
   TITLE:=Audio player
   URL:=http://www.videolan.org/vlc/
   DEPENDS+= +glib2 +libpthread +libmad +libfaad2 +librt +alsa-lib +libid3tag \
-	+libstdcpp +libflac +libmpeg2 +libogg +ffmpeg +libvorbisidec
+	+libstdcpp +libflac +libmpeg2 +libogg +libffmpeg +libvorbisidec
 endef
 
 
