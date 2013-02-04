@@ -25,7 +25,7 @@ define Package/vlc
   CATEGORY:=Multimedia
   TITLE:=Audio player
   URL:=http://www.videolan.org/vlc/
-  DEPENDS+= +glib2 +libpthread +libmad +libfaad2 +librt +alsa-lib +libid3tag \
+  DEPENDS+= +glib2 +libpthread +libfaad2 +librt +alsa-lib +libid3tag \
 	+libstdcpp +libflac +libmpeg2 +libogg +libffmpeg +libvorbisidec
 endef
 
@@ -97,7 +97,7 @@ CONFIGURE_ARGS+= \
 	--disable-mod \
 	--disable-mpc \
 	--disable-gme \
-	--enable-mad \
+	--disable-mad \
 	--enable-avcodec \
 	--enable-avformat \
 	--disable-swscale \
