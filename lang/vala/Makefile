@@ -47,7 +47,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) \
 		$(1)/usr/share/vala-0.16/vapi \
 		$(1)/usr/lib \
-		$(1)/usr/share/pkgconfig \
+		$(1)/usr/lib/pkgconfig \
 		$(1)/usr/bin
 
 	$(INSTALL_DATA) \
@@ -63,8 +63,8 @@ define Build/InstallDev
 		$(1)/usr/bin
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/share/pkgconfig/*.pc \
-		$(1)/usr/share/pkgconfig
+		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/*.pc \
+		$(1)/usr/lib/pkgconfig
 endef
 
 $(eval $(call HostBuild))
