@@ -52,6 +52,12 @@ $(call Package/rygel/description/Default)
  This package contains the main rygel binary.
 endef
 
+define rygel_fixup_git_version_gen
+	$(CP) ./files/git-version-gen $(PKG_BUILD_DIR)/build-aux/git-version-gen
+endef
+
+Hooks/Prepare/Post+=rygel_fixup_git_version_gen
+
 define RemoveValaStamps
 	find $(PKG_BUILD_DIR) -name "*_vala.stamp" | xargs rm -f
 endef
@@ -84,11 +90,19 @@ define Package/rygel/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DATA) files/etc/rygel.conf $(1)/etc
 
+	$(INSTALL_DIR) $(1)/root/.config
+
+	$(INSTALL_DIR) $(1)/usr/share/mime
+	$(CP) ./files/globs $(1)/usr/share/mime
+
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) files/etc/init.d/rygel $(1)/etc/init.d/rygel
 
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) files/etc/config/rygel $(1)/etc/config/rygel
+
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_CONF) files/etc/hotplug.d/iface/30-rygel $(1)/etc/hotplug.d/iface/30-rygel
 
 	$(INSTALL_DIR) $(1)/usr/share/icons/hicolor/{32x32,48x48,128x128}/apps
 	$(INSTALL_DATA) \
