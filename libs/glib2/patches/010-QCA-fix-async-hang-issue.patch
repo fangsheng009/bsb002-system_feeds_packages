@@ -1,0 +1,12 @@
+diff -Nur a/glib/gwakeup.c glib-2.34.3/glib/gwakeup.c
+--- a/glib/gwakeup.c	2013-02-01 15:55:59.791104913 +0800
++++ glib-2.34.3/glib/gwakeup.c	2013-02-01 15:56:38.323106269 +0800
+@@ -206,7 +206,7 @@
+ void
+ g_wakeup_acknowledge (GWakeup *wakeup)
+ {
+-  char buffer[16];
++  char buffer[1];
+ 
+   /* read until it is empty */
+   while (read (wakeup->fds[0], buffer, sizeof buffer) == sizeof buffer);
