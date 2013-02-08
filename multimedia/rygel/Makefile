@@ -90,8 +90,6 @@ define Package/rygel/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DATA) files/etc/rygel.conf $(1)/etc
 
-	$(INSTALL_DIR) $(1)/root/.config
-
 	$(INSTALL_DIR) $(1)/usr/share/mime
 	$(CP) ./files/globs $(1)/usr/share/mime
 
