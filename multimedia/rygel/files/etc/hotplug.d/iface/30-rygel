@@ -2,29 +2,8 @@
 
 case "$ACTION" in
 	ifup)
-		include /lib/network
-		scan_interfaces
-
-		config_load rygel
-		# Read interface name from rygel config
-		local rygel_iface
-		config_get rygel_iface config interface
-
-		if [ "$rygel_iface" = "$INTERFACE" ]; then
-			/etc/init.d/rygel start
-		fi
-	;;
-	ifdown)
-		include /lib/network
-		scan_interfaces
-
-		config_load rygel
-		# Read interface name from rygel config
-		local rygel_iface
-		config_get rygel_iface config interface
-
-		if [ "$rygel_iface" = "$INTERFACE" ]; then
-			/etc/init.d/rygel stop
-		fi
+		# Experience proved that rygel needed to be restarted if an
+		# interface config was updated so that's what we do here
+		/etc/init.d/rygel restart
 	;;
 esac
