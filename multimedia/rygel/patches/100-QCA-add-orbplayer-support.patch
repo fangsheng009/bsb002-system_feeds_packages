@@ -1,0 +1,50 @@
+--- a/src/plugins/Makefile.am
++++ b/src/plugins/Makefile.am
+@@ -30,6 +30,10 @@ if BUILD_PLAYBIN_PLUGIN
+ PLAYBIN = playbin
+ endif
+ 
++if BUILD_ORB_PLUGIN
++ORB = orb
++endif
++
+ SUBDIRS = $(TEST_PLUGIN) \
+ 	  $(TRACKER_PLUGIN) \
+ 	  $(MEDIATHEK_PLUGIN) \
+@@ -37,6 +41,7 @@ SUBDIRS = $(TEST_PLUGIN) \
+ 	  $(EXTERNAL_PLUGIN) \
+ 	  $(MPRIS_PLUGIN) \
+ 	  $(GST_LAUNCH_PLUGIN) \
++	  $(ORB) \
+           $(PLAYBIN)
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+--- a/configure.ac
++++ b/configure.ac
+@@ -72,6 +72,8 @@ RYGEL_ADD_PLUGIN([test],[Test],[no])
+ RYGEL_ADD_PLUGIN([mediathek],[ZDF Mediathek],[no])
+ RYGEL_ADD_PLUGIN([media-export],[MediaExport],[yes])
+ RYGEL_ADD_PLUGIN([gst-launch],[GStreamer launchline],[no])
++RYGEL_ADD_PLUGIN([orb],[GStreamer orb],[yes])
++
+ 
+ dnl Explicitly add stamp files for targets that are not plugins
+ RYGEL_ADD_STAMP([src/rygel/rygel_vala.stamp])
+@@ -232,5 +234,5 @@ echo "
+         external:               ${enable_external_plugin}
+         MPRIS2:                 ${enable_mpris_plugin}
+         gst-launch:             ${enable_gst_launch_plugin}
+-        playbin:                ${enable_playbin_plugin}
++        orb:                	${enable_orb_plugin}
+ "
+--- a/src/rygel/rygel-plugin-loader.vala
++++ b/src/rygel/rygel-plugin-loader.vala
+@@ -150,7 +150,7 @@
+         }
+ 
+         Module module = Module.open (module_file.get_path (),
+-                                     ModuleFlags.BIND_LOCAL);
++                                     0);
+         if (module == null) {
+             warning (_("Failed to load module from path '%s': %s"),
+                      module_file.get_path (),

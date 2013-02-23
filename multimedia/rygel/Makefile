@@ -52,10 +52,14 @@ $(call Package/rygel/description/Default)
  This package contains the main rygel binary.
 endef
 
-define rygel_fixup_git_version_gen
-	$(CP) ./files/git-version-gen $(PKG_BUILD_DIR)/build-aux/git-version-gen
+define rygel_add_base_files
+	$(CP) ./base-files/* $(PKG_BUILD_DIR);
 endef
+Hooks/Prepare/Post+=rygel_add_base_files
 
+define rygel_fixup_git_version_gen
+	$(CP) ./files/git-version-gen $(PKG_BUILD_DIR)/build-aux/git-version-gen;
+endef
 Hooks/Prepare/Post+=rygel_fixup_git_version_gen
 
 define RemoveValaStamps
@@ -171,6 +175,13 @@ define Package/rygel-playbin/description
   This package contains the playbin plugin, the MediaRenderer plugin.
 endef
 $(eval $(call RygelBuildPlugin,playbin))
+
+define Package/rygel-orb/description
+  $(call Package/rygel/description/Default)
+  .
+  This package contains the orb plugin, the MediaRenderer plugin.
+endef
+$(eval $(call RygelBuildPlugin,orb,+orb))
 
 define Package/rygel-playbin-gst-suggested/description
   $(call Package/rygel/description/Default)
