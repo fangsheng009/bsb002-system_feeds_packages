@@ -13,8 +13,8 @@ librygel_orb_la_VALAFLAGS =  	--vapidir=$(srcdir) \
 				$(RYGEL_COMMON_PLUGIN_VALAFLAGS)
 
 librygel_orb_la_LIBADD = $(RYGEL_COMMON_LDADD)	\
-						-L/Users/mlarson/Sources/FebSkifta/skifta/staging_dir/target-mips_r2_uClibc-0.9.33.2/root-ar71xx/usr/lib/ \
 						-lstdc++	\
+						-lOrbPlayTo	\
 						-lorbplay	\
 						$(ORB_LIBS)
 
