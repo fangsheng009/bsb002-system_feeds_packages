@@ -48,32 +48,8 @@ using Rygel;
 		public string? uri { owned get; set; }
 		public double volume { get; set; }
 
-		public bool get_can_seek ();
-		public int get_duration ();
-		public bool get_mute ();
-		public PlayingState get_state ();
-		public int get_position ();
-		public unowned string get_uri ();
-		public unowned string get_protocol_info ();
-		public uint get_volume ();
 		public Player ();
 		public static Player get_default ();
-		public void set_mute (bool mute);
-		public void play (string uri);
-		public void pause ();
-		public void resume ();
-		public void stop ();
-		public void set_position (int time_in_seconds);
-		public void set_protocol_info (string protocol_info);
-		public void set_volume (uint volume);
-		public bool can_seek { get; }
-		public bool mute { get; set; }
-		public PlayingState state { get; }
-		public string protocol_info { get; set; }
-		public virtual signal void playing ();
-		public virtual signal void paused ();
-		public virtual signal void eos ();
-		public virtual signal void error (GLib.Error error);
 	    public string[] get_protocols ();
 	    public string[] get_mime_types ();
 	}

@@ -1,6 +1,6 @@
 # This file is converted to the rygel config syntax.
 # Underscores in option names are changed to hyphens.
 
-config plugin Playbin
+config plugin Orb
 	option enabled true
-	option title 'Audio/Video playback on @HOSTNAME@'
+	option title 'Unconfigured Skifta'

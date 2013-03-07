@@ -27,20 +27,20 @@ using Gee;
 using Orb;
 
 public void module_init (PluginLoader loader) {
-    if (loader.plugin_disabled (OrbPlayer.Plugin.NAME)) {
+    if (loader.plugin_disabled (Orb.Plugin.NAME)) {
         message ("Plugin '%s' disabled by user, ignoring..",
-                 OrbPlayer.Plugin.NAME);
+                 Orb.Plugin.NAME);
 
         return;
     }
 
-    var plugin = new OrbPlayer.Plugin ();
+    var plugin = new Orb.Plugin ();
 
     loader.add_plugin (plugin);
 }
 
-public class Rygel.OrbPlayer.Plugin : Rygel.MediaRendererPlugin {
-    public const string NAME = "RygelOrbPlayer";
+public class Rygel.Orb.Plugin : Rygel.MediaRendererPlugin {
+    public const string NAME = "Orb";
 
     public Plugin () {
         base (Plugin.NAME, _("Orb Player"));

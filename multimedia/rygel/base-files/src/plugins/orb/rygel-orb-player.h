@@ -28,6 +28,9 @@
 #define __ORB_PLAYER_H__
 
 #include <glib-object.h>
+#include <liborbplay.h>
+#include <dlfcn.h>
+#include <rygel.h>
 
 G_BEGIN_DECLS
 
@@ -71,12 +74,6 @@ typedef struct {
 typedef struct {
         GObjectClass parent_class;
 
-        /* Signals */
-        void (* playing)            (RygelOrbPlayer *player);
-        void (* paused)             (RygelOrbPlayer *player);
-        void (* eos)                (RygelOrbPlayer *player);
-        void (* error)              (RygelOrbPlayer *player,
-                                     GError         *error);
         
         /* Future padding */
         void (* _reserved1) (void);
@@ -84,6 +81,24 @@ typedef struct {
         void (* _reserved3) (void);
         void (* _reserved4) (void);
 } RygelOrbPlayerClass;
+
+
+RygelOrbPlayer *
+rygel_orb_player_construct (GType object_type);
+RygelOrbPlayer *
+rygel_orb_player_new (void);
+static gboolean rygel_orb_player_seek (RygelMediaPlayer* base, GstClockTime time);
+static void rygel_orb_player_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_orb_player_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+gint64 rygel_orb_player_get_duration (RygelOrbPlayer *player);
+const char *rygel_orb_player_get_uri (RygelOrbPlayer *player);
+static void rygel_orb_player_set_uri (RygelOrbPlayer* player, const gchar* value);
+static gchar* rygel_orb_player_get_playback_state (RygelOrbPlayer *player);
+static void rygel_orb_player_set_playback_state (RygelOrbPlayer* base, const gchar* value);
+static gdouble rygel_orb_player_get_volume (RygelOrbPlayer *player);
+static void rygel_orb_player_set_volume (RygelOrbPlayer *player, gdouble volume);
+gint64 rygel_orb_player_get_position (RygelOrbPlayer *player);
+
 
 GType
 rygel_orb_player_get_type           (void) G_GNUC_CONST;
@@ -94,53 +109,9 @@ rygel_orb_player_new                (void);
 RygelOrbPlayer *
 rygel_orb_player_get_default 		  (void);
 
-const char *
-rygel_orb_player_get_uri            (RygelOrbPlayer *player);
+static gchar** rygel_orb_player_get_protocols (RygelMediaPlayer* base, int* result_length1);
+static gchar** rygel_orb_player_get_mime_types (RygelMediaPlayer* base, int* result_length1);
 
-void
-rygel_orb_player_set_protocol_info  (RygelOrbPlayer *player,
-                                     const char     *protocol_info);
-
-const char *
-rygel_orb_player_get_protocol_info  (RygelOrbPlayer *player);
-
-void
-rygel_orb_player_play               (RygelOrbPlayer *player,
-                                     const char     *uri);
-
-void
-rygel_orb_player_pause              (RygelOrbPlayer *player);
-
-void
-rygel_orb_player_resume             (RygelOrbPlayer *player);
-
-void
-rygel_orb_player_stop               (RygelOrbPlayer *player);
-
-static gchar* 
-rygel_orb_player_get_state (RygelOrbPlayer *player);
-
-void
-rygel_orb_player_set_position       (RygelOrbPlayer *player,
-                                     int             time_in_seconds);
-
-int
-rygel_orb_player_get_position       (RygelOrbPlayer *player);
-
-static gdouble rygel_orb_player_get_volume (RygelOrbPlayer *player);
-static void rygel_orb_player_set_volume (RygelOrbPlayer *player, gdouble volume);
-
-void
-rygel_orb_player_set_mute           (RygelOrbPlayer *player,
-                                     gboolean                mute);
-gboolean
-rygel_orb_player_get_mute           (RygelOrbPlayer *player);
-
-gboolean
-rygel_orb_player_get_can_seek       (RygelOrbPlayer *player);
-
-int
-rygel_orb_player_get_duration       (RygelOrbPlayer *player);
 
 G_END_DECLS
 

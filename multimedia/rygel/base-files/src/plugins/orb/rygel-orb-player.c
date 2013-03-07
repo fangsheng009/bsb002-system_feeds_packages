@@ -26,9 +26,6 @@
 
 
 #include "rygel-orb-player.h"
-#include <liborbplay.h>
-#include <dlfcn.h>
-#include <rygel.h>
 
 
 struct _RygelOrbPlayerPrivate {
@@ -78,24 +75,10 @@ static RygelOrbPlayer *gPlayer = NULL;
 static gpointer rygel_orb_player_parent_class = NULL;
 #define RYGEL_ORB_PLAYER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_ORB_TYPE_PLAYER, RygelOrbPlayerPrivate))
 
-static void rygel_orb_player_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_orb_player_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+
 static void rygel_orb_player_finalize (GObject *object);
-static gchar** rygel_orb_player_get_protocols (RygelMediaPlayer* base, int* result_length1);
-static gchar** rygel_orb_player_get_mime_types (RygelMediaPlayer* base, int* result_length1);
 static RygelMediaPlayerIface* rygel_orb_player_rygel_media_player_parent_iface = NULL;
 const char *rygel_orb_player_get_protocol_info (RygelOrbPlayer *player);
-const char *rygel_orb_player_get_uri (RygelOrbPlayer *player);
-void rygel_orb_player_pause (RygelOrbPlayer *player);
-static gchar* rygel_orb_player_get_state (RygelOrbPlayer *player);
-static gdouble rygel_orb_player_get_volume (RygelOrbPlayer *player);
-static void rygel_orb_player_set_volume (RygelOrbPlayer *player, gdouble volume);
-int rygel_orb_player_get_position (RygelOrbPlayer *player);
-static void rygel_orb_player_set_uri (RygelOrbPlayer* player, const gchar* value);
-static void rygel_orb_player_set_playback_state (RygelOrbPlayer* base, const gchar* value);
-static gboolean rygel_orb_player_real_seek (RygelMediaPlayer* base, GstClockTime time);
-static gboolean rygel_orb_player_seek (RygelMediaPlayer* base, GstClockTime time);
-int rygel_orb_player_get_duration (RygelOrbPlayer *player);
 static void rygel_orb_player_init (RygelOrbPlayer *player);
 
 
@@ -118,7 +101,7 @@ static void rygel_orb_player_rygel_media_player_interface_init (RygelMediaPlayer
 	iface->seek = (gboolean (*)(RygelMediaPlayer*, GstClockTime)) rygel_orb_player_seek;
 	iface->get_protocols = (gchar** (*)(RygelMediaPlayer*, int*)) rygel_orb_player_get_protocols;
 	iface->get_mime_types = (gchar** (*)(RygelMediaPlayer*, int*)) rygel_orb_player_get_mime_types;
-	iface->get_playback_state = rygel_orb_player_get_state;
+	iface->get_playback_state = rygel_orb_player_get_playback_state;
 	iface->set_playback_state = rygel_orb_player_set_playback_state;
 	iface->get_uri = rygel_orb_player_get_uri;
 	iface->set_uri = rygel_orb_player_set_uri;
@@ -229,6 +212,7 @@ static void
 orb_media_player_playing_cb( orbplay_ctx_t *orbctx, const orbplay_event_t *event, void *app_data )
 {
 	RygelOrbPlayer *player = app_data;
+	printf("Orb orb_media_player_playing_cb\n");
 	g_return_if_fail (RYGEL_ORB_IS_PLAYER (player));
 // 	rygel_media_player_set_playback_state ((RygelMediaPlayer*) player, "PLAYING");
 	g_object_notify ((GObject *) player, "playback-state");
@@ -289,6 +273,7 @@ rygel_orb_player_init (RygelOrbPlayer *player)
         /**
          * Create pointer to private data.
          **/
+	printf("Orb rygel_orb_player_init\n");
         player->priv =
                 G_TYPE_INSTANCE_GET_PRIVATE (player,
                                              RYGEL_ORB_TYPE_PLAYER,
@@ -389,6 +374,7 @@ rygel_orb_player_dispose (GObject *object)
 	RygelOrbPlayer *player;
 	GObjectClass *object_class;
 
+	printf("Orb rygel_orb_player_dispose\n");
 	player = RYGEL_ORB_PLAYER (object);
 
 
@@ -408,6 +394,7 @@ rygel_orb_player_finalize (GObject *object)
 	RygelOrbPlayer *player;
 	GObjectClass *object_class;
 
+	printf("Orb rygel_orb_player_finalize\n");
 	player = RYGEL_ORB_PLAYER (object);
 
 	g_free (player->priv->uri);
@@ -417,156 +404,6 @@ rygel_orb_player_finalize (GObject *object)
 	object_class->finalize (object);
 }
 
-// static void
-// rygel_orb_player_class_init (RygelOrbPlayerClass *klass)
-// {
-// 	GObjectClass *object_class;
-//
-// 	object_class = G_OBJECT_CLASS (klass);
-//
-// 	object_class->set_property = rygel_orb_player_set_property;
-// 	object_class->get_property = rygel_orb_player_get_property;
-// 	object_class->dispose      = rygel_orb_player_dispose;
-// 	object_class->finalize     = rygel_orb_player_finalize;
-//
-// 	g_type_class_add_private (klass, sizeof (RygelOrbPlayerPrivate));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_URI,
-// 	         g_param_spec_string
-// 	                 ("uri",
-// 	                  "URI",
-// 	                  "The loaded URI.",
-// 	                  NULL,
-// 	                  G_PARAM_READWRITE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_PROTOCOL_INFO,
-// 	         g_param_spec_string
-// 	                 ("protocol-info",
-// 	                  "PROTOCOL_INFO",
-// 	                  "The DLNA protocolInfo.",
-// 	                  NULL,
-// 	                  G_PARAM_READWRITE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_STATE,
-// 	         g_param_spec_boolean
-// 	                 ("state",
-// 	                  "Playing State",
-// 	                  "Returns playing state.",
-// 	                  FALSE,
-// 	                  G_PARAM_READWRITE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_POSITION,
-// 	         g_param_spec_int
-// 	                 ("position",
-// 	                  "Position",
-// 	                  "The position in the current stream in seconds.",
-// 	                  0, G_MAXINT, 0,
-// 	                  G_PARAM_READWRITE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_VOLUME,
-// 	         g_param_spec_uint
-// 	                 ("volume",
-// 	                  "Volume",
-// 	                  "The audio volume.",
-// 	                  0, VLC_VOL_MAX, VLC_VOL_DEFAULT,
-// 	                  G_PARAM_READWRITE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_MUTE,
-// 	         g_param_spec_uint
-// 	                 ("mute",
-// 	                  "Mute",
-// 	                  "The audio mute.",
-// 	                  0, 1, VLC_VOL_MUTE_DEFAULT,
-// 	                  G_PARAM_READWRITE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_CAN_SEEK,
-// 	         g_param_spec_boolean
-// 	                 ("can-seek",
-// 	                  "Can seek",
-// 	                  "TRUE if the current stream is seekable.",
-// 	                  FALSE,
-// 	                  G_PARAM_READABLE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	g_object_class_install_property
-// 	        (object_class,
-// 	         PROP_DURATION,
-// 	         g_param_spec_int
-// 	                 ("duration",
-// 	                  "Duration",
-// 	                  "The duration of the current stream in seconds.",
-// 	                  0, G_MAXINT, 0,
-// 	                  G_PARAM_READABLE |
-// 	                  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
-// 	                  G_PARAM_STATIC_BLURB));
-//
-// 	signals[PLAYING] =
-// 	        g_signal_new ("playing",
-// 	                      RYGEL_ORB_TYPE_PLAYER,
-// 	                      G_SIGNAL_RUN_LAST,
-// 	                      G_STRUCT_OFFSET (RygelOrbPlayerClass,
-// 	                                       playing),
-// 	                      NULL, NULL,
-// 	                      g_cclosure_marshal_VOID__VOID,
-// 	                      G_TYPE_NONE, 0);
-//
-// 	signals[PAUSED] =
-// 	        g_signal_new ("paused",
-// 	                      RYGEL_ORB_TYPE_PLAYER,
-// 	                      G_SIGNAL_RUN_LAST,
-// 	                      G_STRUCT_OFFSET (RygelOrbPlayerClass,
-// 	                                       paused),
-// 	                      NULL, NULL,
-// 	                      g_cclosure_marshal_VOID__VOID,
-// 	                      G_TYPE_NONE, 0);
-//
-// 	signals[EOS] =
-// 	        g_signal_new ("eos",
-// 	                      RYGEL_ORB_TYPE_PLAYER,
-// 	                      G_SIGNAL_RUN_LAST,
-// 	                      G_STRUCT_OFFSET (RygelOrbPlayerClass,
-// 	                                       eos),
-// 	                      NULL, NULL,
-// 	                      g_cclosure_marshal_VOID__VOID,
-// 	                      G_TYPE_NONE, 0);
-//
-// 	signals[ERROR] =
-// 	        g_signal_new ("error",
-// 	                      RYGEL_ORB_TYPE_PLAYER,
-// 	                      G_SIGNAL_RUN_LAST,
-// 	                      G_STRUCT_OFFSET (RygelOrbPlayerClass,
-// 	                                       error),
-// 	                      NULL, NULL,
-// 	                      g_cclosure_marshal_VOID__POINTER,
-// 	                      G_TYPE_NONE, 1, G_TYPE_POINTER);
-// }
 
 /**
  * rygel_orb_player_construct
@@ -576,6 +413,7 @@ rygel_orb_player_finalize (GObject *object)
 RygelOrbPlayer *
 rygel_orb_player_construct (GType object_type)
 {
+	printf("Orb rygel_orb_player_construct\n");
 	return g_object_new (RYGEL_ORB_TYPE_PLAYER, NULL);
 }
 
@@ -587,12 +425,14 @@ rygel_orb_player_construct (GType object_type)
 RygelOrbPlayer *
 rygel_orb_player_new (void)
 {
+	printf("Orb rygel_orb_player_new\n");
 	return rygel_orb_player_construct (RYGEL_ORB_TYPE_PLAYER);
 }
 
 RygelOrbPlayer *
 rygel_orb_player_get_default (void)
 {
+	printf("Orb rygel_orb_player_get_default\n");
 	if(!gPlayer)
 		gPlayer = rygel_orb_player_new();
 
@@ -610,6 +450,7 @@ void
 rygel_orb_player_set_protocol_info (RygelOrbPlayer *player,
                                     const char     *protocol_info)
 {
+	printf("Orb rygel_orb_player_set_protocol_info\n");
 	g_return_if_fail (RYGEL_ORB_IS_PLAYER (player));
 
 
@@ -635,6 +476,7 @@ rygel_orb_player_set_protocol_info (RygelOrbPlayer *player,
 const char *
 rygel_orb_player_get_protocol_info (RygelOrbPlayer *player)
 {
+	printf("Orb rygel_orb_player_get_protocol_info\n");
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), NULL);
 
 	return player->priv->protocol_info;
@@ -800,14 +642,15 @@ rygel_orb_player_play (RygelOrbPlayer *player,
 }
 
 /**
- * rygel_orb_player_get_state
+ * rygel_orb_player_get_playback_state
  * @player: A #RygelOrbPlayer
  *
  * Return value: Playing state of @player.
  **/
 static gchar*
-rygel_orb_player_get_state (RygelOrbPlayer *player)
+rygel_orb_player_get_playback_state (RygelOrbPlayer *player)
 {
+	printf("Orb rygel_orb_player_get_playback_state\n");
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), FALSE);
 
 	if (!player->priv->pVLCInstance)
@@ -853,25 +696,25 @@ rygel_orb_player_get_state (RygelOrbPlayer *player)
 /**
  * rygel_orb_player_set_position
  * @player: A #RygelOrbPlayer
- * @time_in_seconds: The position in the current stream in seconds.
+ * @time_in_nseconds: The position in the current stream in nanoseconds.
  *
- * Sets the position in the current stream to @time_in_seconds.
+ * Sets the position in the current stream to @time_in_nseconds.
  **/
 void
 rygel_orb_player_set_position (RygelOrbPlayer *player,
-                               int time_in_seconds)
+                               gint64 time_in_nseconds)
 {
-	// printf("Orb rygel_orb_player_set_position:  %d\n", time_in_seconds);
+	printf("Orb rygel_orb_player_set_position:  %d\n", time_in_nseconds);
 	g_return_if_fail (RYGEL_ORB_IS_PLAYER (player));
 
 	if (!player->priv->pVLCInstance)
 		return;
 
-	if (time_in_seconds < 0) {
+	if (time_in_nseconds < 0) {
 		return;
 	}
 
-	int time_in_mseconds = time_in_seconds * 1000;
+	int time_in_mseconds = time_in_nseconds / 1000 / 1000;
 	liborbplay_set_position(player->priv->pVLCInstance, time_in_mseconds);
 	g_debug("%p: New time is %lld", player, time_in_mseconds);
 }
@@ -882,19 +725,22 @@ rygel_orb_player_set_position (RygelOrbPlayer *player,
  *
  * Return value: The position in the current file in seconds.
  **/
-int
+gint64
 rygel_orb_player_get_position (RygelOrbPlayer *player)
 {
-	// printf("Orb rygel_orb_player_get_position\n");
+	printf("Orb rygel_orb_player_get_position\n");
+	gint64 new_time;
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), -1);
 
 	if (!player->priv->pVLCInstance)
 	        return -1;
 
 	int time_in_mseconds = liborbplay_get_position(player->priv->pVLCInstance);
-
-	// printf("Orb rygel_orb_player_get_position %d\n", time_in_mseconds);
-	return time_in_mseconds / 1000;
+	new_time = (double)time_in_mseconds;
+	new_time = new_time * 1000 * 1000;
+	printf("Orb rygel_orb_player_get_position mSec:%d\n", time_in_mseconds);
+	printf("Orb rygel_orb_player_get_position nSec:%d\n", new_time);
+	return new_time;
 }
 
 /**
@@ -960,6 +806,7 @@ void
 rygel_orb_player_set_mute (RygelOrbPlayer *player,
                            gboolean                mute)
 {
+	printf("Orb rygel_orb_player_set_mute\n");
 	g_return_if_fail (RYGEL_ORB_IS_PLAYER (player));
 
 	if (!player->priv->pVLCInstance)
@@ -979,6 +826,7 @@ rygel_orb_player_get_mute (RygelOrbPlayer *player)
 {
 	gboolean mute;
 
+	printf("Orb rygel_orb_player_get_mute\n");
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), 0);
 
 	if (!player->priv->pVLCInstance)
@@ -998,6 +846,7 @@ rygel_orb_player_get_mute (RygelOrbPlayer *player)
 gboolean
 rygel_orb_player_get_can_seek (RygelOrbPlayer *player)
 {
+	printf("Orb rygel_orb_player_get_can_seek\n");
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), FALSE);
 
 // 	int is_seekable = libvlc_media_player_is_seekable(player->priv->pVLCInstance);
@@ -1008,11 +857,12 @@ rygel_orb_player_get_can_seek (RygelOrbPlayer *player)
  * rygel_orb_player_get_duration
  * @player: A #RygelOrbPlayer
  *
- * Return value: The duration of the current stream in seconds.
+ * Return value: The duration of the current stream in nanoseconds.
  **/
-int
+gint64
 rygel_orb_player_get_duration (RygelOrbPlayer *player)
 {
+	printf("Orb rygel_orb_player_get_duration\n");
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), -1);
 
 // 	printf("Orb rygel_orb_player_get_duration - %d\n",player->priv->duration);
