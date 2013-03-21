@@ -1,0 +1,13 @@
+--- a/src/rygel/rygel-root-device-factory.vala
++++ b/src/rygel/rygel-root-device-factory.vala
+@@ -321,6 +321,10 @@
+         if (!file.query_exists (null)) {
+             return new XMLDoc.from_path (path2);
+         }
++        else
++        {
++            return new XMLDoc.from_path (path1);
++        }
+ 
+         var info = file.query_info (FILE_ATTRIBUTE_TIME_MODIFIED,
+                                     FileQueryInfoFlags.NONE);
