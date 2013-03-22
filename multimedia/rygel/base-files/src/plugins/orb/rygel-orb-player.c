@@ -51,7 +51,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static const gchar* RYGEL_ORB_PLAYER_protocols[1] = {"http-get"};
-static const gchar* RYGEL_ORB_PLAYER_mime_types[30] = {"audio/mpeg", "application/ogg", "audio/x-vorbis", "audio/x-vorbis+ogg", "audio/x-ms-wma", "audio/x-ms-asf", "audio/x-flac", "audio/x-mod", "audio/x-wav", "audio/x-ac3", "audio/x-m4a", "audio/mp4", "image/jpeg", "image/png", "video/x-theora", "video/x-dirac", "video/x-wmv", "video/x-wma", "video/x-msvideo", "video/x-3ivx", "video/x-3ivx", "video/x-matroska", "video/x-mkv", "video/mpeg", "video/mp4", "video/x-ms-asf", "video/x-xvid", "video/x-ms-wmv", "audio/L16;rate=44100;channels=2", "audio/L16;rate=44100;channels=1"};
+static const gchar* RYGEL_ORB_PLAYER_mime_types[16] = {"audio/mpeg", "audio/mpeg3", "audio/aac", "audio/aiff", "audio/wav", "audio/x-ms-wma", "audio/alac", "application/ogg", "audio/x-vorbis", "audio/x-vorbis+ogg", "audio/x-flac", "audio/x-ac3", "audio/x-m4a", "audio/mp4", "audio/L16;rate=44100;channels=2", "audio/L16;rate=44100;channels=1"};
 
 #define TICK_TIMEOUT 0.5
 
@@ -270,14 +270,14 @@ orb_error_cb( orbplay_ctx_t *orbctx, const orbplay_event_t *event, void *app_dat
 static void
 rygel_orb_player_init (RygelOrbPlayer *player)
 {
-        /**
-         * Create pointer to private data.
-         **/
+	/**
+	 * Create pointer to private data.
+	 **/
 	printf("Orb rygel_orb_player_init\n");
-        player->priv =
-                G_TYPE_INSTANCE_GET_PRIVATE (player,
-                                             RYGEL_ORB_TYPE_PLAYER,
-                                             RygelOrbPlayerPrivate);
+	player->priv =
+			G_TYPE_INSTANCE_GET_PRIVATE (player,
+										 RYGEL_ORB_TYPE_PLAYER,
+										 RygelOrbPlayerPrivate);
 
 
 	player->priv->_playback_state = strdup("STOPPED");
@@ -287,6 +287,7 @@ rygel_orb_player_init (RygelOrbPlayer *player)
 
 	// init orb modules, should be done only once
 	pVLCInstance = liborbplay_new ();
+	printf("Orb rygel_orb_player_init - pVLCInstance = %p\n",pVLCInstance);
 
 	liborbplay_events_attach(pVLCInstance,
 	                    ORBPLAY_EVENT_EOS_REACHED,
@@ -650,28 +651,24 @@ rygel_orb_player_play (RygelOrbPlayer *player,
 static gchar*
 rygel_orb_player_get_playback_state (RygelOrbPlayer *player)
 {
+	gchar *retString;
 	printf("Orb rygel_orb_player_get_playback_state\n");
 	g_return_val_if_fail (RYGEL_ORB_IS_PLAYER (player), FALSE);
 
 	if (!player->priv->pVLCInstance)
-	        return FALSE;
+	{
+		printf("Orb rygel_orb_player_get_playback_state - NO Bravo instance\n");
+		retString = strdup ("STOPPED");
+		return retString;
+	}
 
 
 	orbplay_state_t state = liborbplay_get_state(player->priv->pVLCInstance);
 	printf("Orb Get_state:  %x\n", state);
-	gchar *retString;
-// 	ORBPLAY_STATE_ERROR,
-// 	ORBPLAY_STATE_STARTING,
-// 	ORBPLAY_STATE_BUFFERING,
-// 	ORBPLAY_STATE_PLAYING,
-// 	ORBPLAY_STATE_STOPPED,
-// 	ORBPLAY_STATE_PAUSED,
 
 	switch (state) {
 	case ORBPLAY_STATE_BUFFERING:
 	case ORBPLAY_STATE_STARTING:
-// 		retString = strdup ("TRANSITIONING");
-// 		break;
 	case ORBPLAY_STATE_PLAYING:
 		if(player->priv->_playback_state_int == ORBPLAY_STATE_PAUSED)
 			retString = strdup ("PAUSED_PLAYBACK");
