@@ -16,7 +16,7 @@ PKG_MD5SUM:=163a5712b86f6bdfebdf233cc6e2192d
 
 PKG_INSTALL:=1
 
-PKG_BUILD_DEPENDS:=USE_UCLIBC:argp-standalone
+PKG_BUILD_DEPENDS:=USE_UCLIBC:argp-standalone USE_EXTERNAL_LIBC:argp-standalone
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -45,6 +45,11 @@ TARGET_LDFLAGS += "-lintl"
 endif
 
 ifdef CONFIG_USE_UCLIBC
+CONFIGURE_VARS += \
+	LIBS="-largp"
+endif
+
+ifdef CONFIG_USE_EXTERNAL_LIBC
 CONFIGURE_VARS += \
 	LIBS="-largp"
 endif
