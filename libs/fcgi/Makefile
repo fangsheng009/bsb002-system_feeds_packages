@@ -19,7 +19,9 @@ PKG_FIXUP:=libtool-ucxx
 
 PKG_INSTALL:=1
 
+ifeq ($(CONFIG_INSTALL_LIBSTDCPP),y)
 include $(INCLUDE_DIR)/uclibc++.mk
+endif
 include $(INCLUDE_DIR)/package.mk
 
 define Package/fcgi/Default
@@ -61,7 +63,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/fastcgi.h $(1)/usr/include/
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/fcgi{app,_config,misc,o,os,_stdio}.h $(1)/usr/include/
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfcgi{,++}.{a,so*} $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfcgi*.{a,so*} $(1)/usr/lib/
 endef
 
 define Package/fcgi/install
