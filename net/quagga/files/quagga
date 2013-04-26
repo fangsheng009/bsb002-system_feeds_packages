@@ -25,7 +25,7 @@ fi
 shift
 ARG_DAEMONS=$*
 BINDIR=/usr/sbin
-CONFDIR=/etc/quagga
+CONFDIR=/var/etc/quagga
 STATEDIR=/var/run/quagga
 RUNUSER=network
 RUNGROUP=$RUNUSER
@@ -318,7 +318,7 @@ then
 					${WATCHQUAGGA_DAEMONS}
 				status=$?
 			else
-				"${BINDIR}/${d}" ${DAEMON_FLAGS}
+				"${BINDIR}/${d}" ${DAEMON_FLAGS} -f ${CONFDIR}/${d}.conf
 				status=$?
 			fi
 			if [ $status -eq 0 ]

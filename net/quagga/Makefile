@@ -256,6 +256,8 @@ define Package/quagga-ripd/install
 	$(INSTALL_DIR) $(1)/etc/quagga
 	chmod 0750 $(1)/etc/quagga
 	$(INSTALL_CONF) ./files/quagga.conf $(1)/etc/quagga/ripd.conf
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/ripd.config $(1)/etc/config/ripd
 endef
 
 define Package/quagga-ripngd/install
