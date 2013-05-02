@@ -1,6 +1,0 @@
-# This file is converted to the rygel config syntax.
-# Underscores in option names are changed to hyphens.
-
-config plugin Orb
-	option enabled true
-	option title 'Unconfigured Skifta'
