@@ -5,8 +5,6 @@
  tests/check/Makefile
  m4/Makefile
 -po/Makefile.in
- pkgconfig/Makefile
- pkgconfig/gstreamer-plugins-ugly-uninstalled.pc
  gst-plugins-ugly.spec
  )
  
@@ -16,8 +14,8 @@
  DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
  
  SUBDIRS = \
--	gst-libs gst ext m4 common pkgconfig po
-+	gst-libs gst ext m4 common pkgconfig
+-	gst-libs gst ext m4 common po
++	gst-libs gst ext m4 common
  
  # include before EXTRA_DIST for win32 assignment
  include $(top_srcdir)/common/win32.mak
@@ -27,8 +25,8 @@
  top_srcdir = @top_srcdir@
  DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
  SUBDIRS = \
--	gst-libs gst ext m4 common pkgconfig po
-+	gst-libs gst ext m4 common pkgconfig
+-	gst-libs gst ext m4 common po
++	gst-libs gst ext m4 common
  
  
  # the MANIFEST contains all win32 related files that should be disted
