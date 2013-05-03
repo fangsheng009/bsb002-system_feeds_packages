@@ -26,6 +26,10 @@ igmp_header() {
 	local quickleave
 	config_get_bool quickleave "$1" quickleave 0
 
+	config_get max_group "$1" max_group
+	[ -z "$max_group" ] && max_group=60
+	echo $max_group > /proc/sys/net/ipv4/igmp_max_memberships
+
 	mkdir -p /var/etc
 	rm -f /var/etc/igmpproxy.conf
 	[ $quickleave -gt 0 ] && echo "quickleave" >> /var/etc/igmpproxy.conf
@@ -52,6 +56,7 @@ igmp_add_phyint() {
 }
 
 start() {
+	echo 2 > /proc/sys/net/ipv4/conf/all/force_igmp_version
 	config_load igmpproxy
 	config_foreach igmp_header igmpproxy
 	config_foreach igmp_add_phyint phyint
