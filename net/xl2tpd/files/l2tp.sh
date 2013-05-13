@@ -59,6 +59,15 @@ proto_l2tp_setup() {
 	mkdir -p /tmp/l2tp
 
 	echo "${keepalive:+lcp-echo-interval $interval lcp-echo-failure ${keepalive%%[, ]*}}" > "${optfile}"
+	echo "ipcp-accept-local" >>"${optfile}"
+	echo "ipcp-accept-remote" >>"${optfile}"
+	echo "refuse-pap" >>"${optfile}"
+	echo "refuse-chap" >>"${optfile}"
+	echo "refuse-eap" >>"${optfile}"
+	echo "require-mschap-v2" >>"${optfile}"
+	echo "noccp" >> "${optfile}"
+	echo "noauth" >> "${optfile}"
+	echo "crtscts" >> "${optfile}"
 	echo "usepeerdns" >> "${optfile}"
 	echo "nodefaultroute" >> "${optfile}"
 	echo "${username:+user \"$username\" password \"$password\"}" >> "${optfile}"
