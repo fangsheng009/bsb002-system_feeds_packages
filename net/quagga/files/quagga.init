@@ -5,6 +5,9 @@ START=60
 
 . /lib/functions/network.sh
 
+# Always start zebra. Other daemons are started only if they're enabled in UCI
+START_DAEMONS="zebra"
+
 ripd_iface_set_interface() {
 	local cfg=$1
 	local conffile=$2
@@ -45,7 +48,7 @@ ripd_config() {
 	# Only run this function if ripd is enabled
 	config_get_bool enable config enable 0
 	[ "${enable}" -gt 0 ] || return 1
-	cp  /etc/quagga/* /var/etc/quagga/ -f
+
 	cat /etc/quagga/ripd.conf > ${tmpconf}
 
 	echo "!" >> ${tmpconf}
@@ -67,9 +70,12 @@ ripd_config() {
 
 start() {
 	mkdir -p /var/etc/quagga
-	ripd_config
+	cp  /etc/quagga/* /var/etc/quagga/ -f
 
-	/usr/sbin/quagga.init start
+	ripd_config && append START_DAEMONS "ripd"
+
+	append START_DAEMONS "watchquagga"
+	/usr/sbin/quagga.init start ${START_DAEMONS}
 }
 
 stop() {
