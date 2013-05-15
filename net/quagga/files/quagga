@@ -31,8 +31,8 @@ RUNUSER=network
 RUNGROUP=$RUNUSER
 DAEMONS=${DAEMONS:-"zebra ripd ripngd ospfd ospf6d bgpd"}
 DAEMON_FLAGS=-d
-WATCHQUAGGA_FLAGS="-d -z -T 60 -R"
-WATCHQUAGGA_CMD="$0 watchrestart"
+WATCHQUAGGA_FLAGS="-d -z -T 60 -r"
+WATCHQUAGGA_CMD="$0 watchrestart %s"
 if [ ${COMMAND} != "watchrestart" -a -x "${BINDIR}/watchquagga" ]
 then
 	DAEMONS="${DAEMONS} watchquagga"
@@ -137,6 +137,7 @@ in
 				if select_subset "${ARG_DAEMONS}" "${START_DAEMONS}"
 				then
 					START_DAEMONS=${RESULT}
+					WATCHQUAGGA_DAEMONS=${RESULT%watchquagga}
 				else
 					die "these daemons are not startable:${RESULT}."
 				fi
