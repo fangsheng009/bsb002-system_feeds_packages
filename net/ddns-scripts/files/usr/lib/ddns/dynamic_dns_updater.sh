@@ -276,7 +276,8 @@ verbose_echo "time_since_update = $human_time_since_update hours"
 
 while [ true ]
 do
-	registered_ip=$(echo $(nslookup "$domain" 2>/dev/null) |  grep -o "Name:.*" | grep -o "$ip_regex")
+	registered_ip=
+	[ -e "/var/run/dynamic_dns/registered_ip" ] && registered_ip=$(cat /var/run/dynamic_dns/registered_ip)
 	current_ip=$(get_current_ip)
 
 
@@ -334,6 +335,7 @@ do
 		verbose_echo "update complete, time is: $human_time"
 
 		echo "$last_update" > "/var/run/dynamic_dns/$service_id.update"
+		echo "$registered_ip" > "/var/run/dynamic_dns/registered_ip"
 	else
 		human_time=$(date)
 		human_time_since_update=$(( $time_since_update / ( 60 * 60 ) ))
