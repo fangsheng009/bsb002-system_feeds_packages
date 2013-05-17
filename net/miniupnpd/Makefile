@@ -44,11 +44,10 @@ MAKE_FLAGS += \
 	miniupnpd
 
 define Package/miniupnpd/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config $(1)/etc/hotplug.d/iface $(1)/etc/hotplug.d/firewall
+	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config $(1)/etc/hotplug.d/firewall
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/miniupnpd $(1)/usr/sbin/miniupnpd
 	$(INSTALL_BIN) ./files/miniupnpd.init $(1)/etc/init.d/miniupnpd
 	$(INSTALL_CONF) ./files/upnpd.config $(1)/etc/config/upnpd
-	$(INSTALL_DATA) ./files/miniupnpd.iface.hotplug $(1)/etc/hotplug.d/iface/50-miniupnpd
 	$(INSTALL_DATA) ./files/miniupnpd.firewall.hotplug $(1)/etc/hotplug.d/firewall/50-miniupnpd
 	$(INSTALL_DIR) $(1)/usr/share/miniupnpd
 endef
