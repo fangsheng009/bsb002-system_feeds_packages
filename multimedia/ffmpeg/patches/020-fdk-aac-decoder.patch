@@ -1,6 +1,25 @@
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --- a/configure
 +++ b/configure
-@@ -1753,6 +1753,7 @@ vc1_parser_select="error_resilience mpeg
+@@ -5,6 +5,7 @@
+ # Copyright (c) 2000-2002 Fabrice Bellard
+ # Copyright (c) 2005-2008 Diego Biurrun
+ # Copyright (c) 2005-2008 Mans Rullgard
++# Copyright (c) 2013 Qualcomm Atheros, Inc.
+ #
+ 
+ # Prevent locale nonsense from breaking basic text processing.
+@@ -1753,6 +1754,7 @@ vc1_parser_select="error_resilience mpeg
  libaacplus_encoder_deps="libaacplus"
  libcelt_decoder_deps="libcelt"
  libfaac_encoder_deps="libfaac"
@@ -20,7 +39,14 @@
  OBJS-$(CONFIG_LIBGSM_ENCODER)             += libgsm.o
 --- a/libavcodec/allcodecs.c
 +++ b/libavcodec/allcodecs.c
-@@ -428,7 +428,7 @@ void avcodec_register_all(void)
+@@ -1,5 +1,6 @@
+ /*
+  * Provide registration of all codecs, parsers and bitstream filters for libavcodec.
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
+  * Copyright (c) 2002 Fabrice Bellard
+  *
+  * This file is part of FFmpeg.
+@@ -428,7 +429,7 @@ void avcodec_register_all(void)
      /* external libraries */
      REGISTER_DECODER (LIBCELT, libcelt);
      REGISTER_ENCODER (LIBFAAC, libfaac);
@@ -31,9 +57,10 @@
      REGISTER_ENCDEC  (LIBILBC, libilbc);
 --- /dev/null
 +++ b/libavcodec/libfdk-aacdec.c
-@@ -0,0 +1,173 @@
+@@ -0,0 +1,174 @@
 +/*
 + * AAC decoder wrapper
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
 + * Copyright (c) 2012 Martin Storsjo
 + *
 + * This file is part of Libav.

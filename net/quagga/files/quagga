@@ -1,5 +1,6 @@
 #!/bin/sh
 #
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
 # quagga	Starts/stops quagga daemons and watchquagga.
 #		Create a daemon.conf file to have that routing daemon
 #		started/stopped automagically when using this script

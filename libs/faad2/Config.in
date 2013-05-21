@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
+#
+
 config FAAD2_ALWAYS_USE_FLOATING_POINT
 	depends on PACKAGE_libfaad2
 	bool "Build FAAD2 to use floating-point math even if using soft floats."

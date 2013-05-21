@@ -1,4 +1,6 @@
-# fdk-aac package
+#
+# Copyright (c) 2013 Qualcomm Atheros, Inc.
+#
 
 include	$(TOPDIR)/rules.mk
 

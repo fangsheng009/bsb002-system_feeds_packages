@@ -1,6 +1,24 @@
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --- a/extensions/rtsp/netfilter_helpers.h
 +++ b/extensions/rtsp/netfilter_helpers.h
-@@ -16,6 +16,32 @@
+@@ -1,4 +1,6 @@
+ /*
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *
+  * Helpers for netfiler modules.  This file provides implementations for basic
+  * functions such as strncasecmp(), etc.
+  *
+@@ -16,6 +18,32 @@
  
  #include <linux/ctype.h>
  #define iseol(c) ( (c) == '\r' || (c) == '\n' )
@@ -35,7 +53,16 @@
   * The standard strncasecmp()
 --- a/extensions/rtsp/nf_conntrack_rtsp.c
 +++ b/extensions/rtsp/nf_conntrack_rtsp.c
-@@ -35,6 +35,7 @@
+@@ -1,5 +1,8 @@
+ /*
+  * RTSP extension for IP connection tracking
++ *
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *
+  * (C) 2003 by Tom Marshall <tmarshall at real.com>
+  * based on ip_conntrack_irc.c
+  *
+@@ -35,6 +38,7 @@
  #include <net/tcp.h>
  
  #include <net/netfilter/nf_conntrack.h>
@@ -43,7 +70,7 @@
  #include <net/netfilter/nf_conntrack_expect.h>
  #include <net/netfilter/nf_conntrack_helper.h>
  #include "nf_conntrack_rtsp.h"
-@@ -253,13 +254,48 @@
+@@ -253,13 +257,48 @@ rtsp_parse_transport(char* ptran, uint t
  	return rc;
  }
  
@@ -97,7 +124,7 @@
  }
  
  /*** conntrack functions ***/
-@@ -304,6 +340,12 @@
+@@ -304,6 +343,12 @@ help_out(struct sk_buff *skb, unsigned c
  					&transoff, &translen))
  			break;      /* not a valid message */
  		
@@ -110,7 +137,7 @@
  		if (strncmp(pdata+cmdoff, "SETUP ", 6) != 0)
  			continue;   /* not a SETUP message */
  		pr_debug("found a setup message\n");
-@@ -343,10 +385,10 @@
+@@ -343,10 +388,10 @@ help_out(struct sk_buff *skb, unsigned c
  			//exp->mask.dst.u.udp.port  = 0xfffe;
  		}
  
@@ -126,9 +153,11 @@
  		nf_nat_rtsp = rcu_dereference(nf_nat_rtsp_hook);
 --- a/extensions/rtsp/nf_nat_rtsp.c
 +++ b/extensions/rtsp/nf_nat_rtsp.c
-@@ -1,5 +1,11 @@
+@@ -1,5 +1,13 @@
  /*
   * RTSP extension for TCP NAT alteration
++ *
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
 + *
 + * (C) 2010 Atheros Communications. Inc.
 + *    3/23/2010, <yyu@atheros.com>
@@ -138,7 +167,7 @@
   * (C) 2003 by Tom Marshall <tmarshall at real.com>
   * based on ip_nat_irc.c
   *
-@@ -44,13 +50,12 @@
+@@ -44,13 +52,12 @@
  #include "netfilter_helpers.h"
  #define NF_NEED_MIME_NEXTLINE
  #include "netfilter_mime.h"
@@ -154,7 +183,7 @@
  
  static char*    stunaddr = NULL;
  static char*    destaction = NULL;
-@@ -117,12 +122,14 @@
+@@ -117,12 +124,14 @@ rtsp_mangle_tran(enum ip_conntrack_info
      uint        off = 0;
      uint        diff;           /* Number of bytes we removed */
  
@@ -169,7 +198,7 @@
  
      get_skb_tcpdata(skb, &ptcp, &tcplen);
      ptran = ptcp+tranoff;
-@@ -141,8 +148,12 @@
+@@ -141,8 +150,12 @@ rtsp_mangle_tran(enum ip_conntrack_info
      t = &exp->tuple;
      t->dst.u3.ip = newip;
  
@@ -184,7 +213,7 @@
      pr_debug("stunaddr=%s (%s)\n", szextaddr, (extip?"forced":"auto"));
  
      rbuf1len = rbufalen = 0;
-@@ -170,9 +181,33 @@
+@@ -170,9 +183,33 @@ rtsp_mangle_tran(enum ip_conntrack_info
              t->dst.u.udp.port = htons(loport);
              if (nf_ct_expect_related(exp) == 0)
              {
@@ -219,7 +248,7 @@
              }
          }
          if (loport != 0)
-@@ -257,7 +292,7 @@
+@@ -257,7 +294,7 @@ rtsp_mangle_tran(enum ip_conntrack_info
                  {
                      diff = nextfieldoff-off;
                      if (!nf_nat_mangle_tcp_packet(skb, ct, ctinfo,
@@ -228,7 +257,7 @@
                      {
                          /* mangle failed, all we can do is bail */
  			nf_ct_unexpect_related(exp);
-@@ -432,7 +467,7 @@
+@@ -432,7 +469,7 @@ help(struct sk_buff *skb, enum ip_conntr
  
  static void expected(struct nf_conn* ct, struct nf_conntrack_expect *exp)
  {
@@ -237,7 +266,7 @@
      u_int32_t newdstip, newsrcip, newip;
  
      struct nf_conn *master = ct->master;
-@@ -440,18 +475,18 @@
+@@ -440,18 +477,18 @@ static void expected(struct nf_conn* ct,
      newdstip = master->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3.ip;
      newsrcip = ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3.ip;
      //FIXME (how to port that ?)
