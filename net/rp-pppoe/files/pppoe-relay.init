@@ -2,6 +2,8 @@
 # Copyright (C) 2006-2011 OpenWrt.org
 # Copyright (c) 2013 Qualcomm Atheros, Inc.
 
+. /lib/functions/network.sh
+
 load_relay() {
 	local enable client server
 	local client_iface server_iface
@@ -9,7 +11,7 @@ load_relay() {
 	config_get client $1 client "lan"
 	config_get server $1 server "wan"
 	client_iface=$(uci_get_state network "$client" ifname "$client")
-	server_iface=$(uci_get_state network "$server" ifname "$server")
+	network_get_physdev server_iface $server
 	[ $enable == 1 ] && {
 		OPTIONS="-C $client_iface -S $server_iface"
 		service_start /usr/sbin/pppoe-relay $OPTIONS
