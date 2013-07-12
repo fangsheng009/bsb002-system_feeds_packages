@@ -109,6 +109,10 @@ define Package/rp-pppoe-relay/install
 	$(INSTALL_BIN) ./files/pppoe-relay.init $(1)/etc/init.d/pppoe-relay
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/pppoe-relay $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/etc/config
+	$(CP) ./files/pppoe.config $(1)/etc/config/pppoe
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_BIN) ./files/pppoe.hotplug $(1)/etc/hotplug.d/iface/65-pppoe
 endef
 
 define Package/rp-pppoe-server/install
