@@ -33,7 +33,7 @@ endef
 CONFIGURE_ARGS += \
 	--enable-shared \
 	--enable-static \
-	--with-kernel-headers="$(LINUX_DIR)/include" \
+	--with-kernel-headers="$(LINUX_SRC_DIR)/include" \
 	--without-readline \
 	--with-openssl="$(STAGING_DIR)/usr" \
 	--without-libradius \
