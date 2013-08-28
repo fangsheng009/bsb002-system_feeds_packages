@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jquery-flot-axislabels
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git@github.qualcomm.com:streamboost/jquery-flot-axislabels.git
+PKG_SOURCE_URL:=git://github.com/xuanluo/flot-axislabels.git
 PKG_BRANCH:=master
 PKG_RELEASE:=1
 
