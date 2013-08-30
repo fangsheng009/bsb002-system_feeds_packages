@@ -1,20 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jquery-contextmenu
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git@github.qualcomm.com:streamboost/jquery-contextmenu.git
+PKG_SOURCE_URL:=https://www.codeaurora.org/mirrored_source/quic/qsdk/
 PKG_BRANCH:=master
 PKG_RELEASE:=1
+PKG_VERSION:=1.01
 
-include $(INCLUDE_DIR)/local-development.mk
-ifeq ($(DUMP)$(PKG_VERSION),)
-  PKG_REV:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
-  PKG_VERSION:=1.01-g$(PKG_REV)
-endif
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=$(PKG_REV)
-PKG_SOURCE_MIRROR:=none
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-gecb2ce1.tar.gz
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-gecb2ce1
+PKG_MD5SUM:=68bea4fe66f2532644c754a7ddcf7268
 
 include $(INCLUDE_DIR)/package-version-override.mk
 include $(INCLUDE_DIR)/package.mk
