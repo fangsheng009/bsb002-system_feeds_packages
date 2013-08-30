@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mplayer
-PKG_VERSION:=1.0rc3
+PKG_VERSION:=1.1.1
 PKG_RELEASE:=1
 
-PKG_SOURCE:=MPlayer-$(PKG_VERSION).tar.bz2
+PKG_SOURCE:=MPlayer-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.mplayerhq.hu/MPlayer/releases/
 PKG_BUILD_DIR=$(BUILD_DIR)/MPlayer-$(PKG_VERSION)
-PKG_MD5SUM:=e1221be5fcad74a2a4185f67ba6c9ae0
+PKG_MD5SUM:=39dd55f30eb5403f219a606e79a6648a
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -23,7 +23,7 @@ define Package/mplayer
   CATEGORY:=Sound
   TITLE:=MPlayer
   URL:=http://www.mplayerhq.hu/
-  DEPENDS:=+libbzip2 +libpthread +libncurses +libmad +libmpg123 +libltdl +alsa-lib +liblzo +libSDL +libogg +libtheora +zlib
+  DEPENDS:=+libbzip2 +libpthread +libncurses +libmad +libmpg123 +libltdl +alsa-lib +liblzo +libSDL +libogg +libtheora +zlib +opencore-amr
 
 endef
 
@@ -63,7 +63,9 @@ CONFIGURE_ARGS = \
 	--disable-fribidi \
 	--disable-gif \
 	--disable-png \
-	--disable-jpeg
+	--disable-jpeg \
+	--enable-libopencore_amrnb \
+	--enable-libopencore_amrwb
 
 define Package/mplayer/install
 	$(INSTALL_DIR) $(1)/usr/bin
