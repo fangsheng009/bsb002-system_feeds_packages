@@ -36,13 +36,8 @@ process_add() {
 
 }
 
-start() {
-        local disabled daemon httpdport httpduser httpdnetwork
-
-	config_load monit
-
-	config_get disabled config disabled "0"
-	[ "$disabled" -eq 0 ] || return 1
+create_ctrlfile() {
+        local daemon httpdport httpduser httpdnetwork
 
 	config_get daemon config daemon "60"
 	config_get httpdport config httpport "2812"
@@ -64,8 +59,18 @@ start() {
 
 	cfg_append "\n# Includes"
 	cfg_append "include /etc/monit.d/*"
+}
 
+start() {
+        local disabled
+
+	config_load monit
+	config_get disabled config disabled "0"
+	[ "$disabled" -eq 0 ] || return 1
+
+	create_ctrlfile
 	[ -f $CONTROL_FILE ] || return 1
+
 	chmod 0700 $CONTROL_FILE
 	service_start /usr/bin/monit -c $CONTROL_FILE
 }
@@ -73,3 +78,21 @@ start() {
 stop() {
 	service_stop /usr/bin/monit
 }
+
+reload() {
+	local disabled pid
+
+	config_load monit
+	config_get disabled config disabled "0"
+	[ "$disabled" -eq 0 ] || return 1
+
+	pid=`cat /tmp/run/monit.pid 2>/dev/null`
+	[ -n "$pid" ] || return 1
+
+	create_ctrlfile
+	[ -f $CONTROL_FILE ] || return 1
+
+	chmod 0700 $CONTROL_FILE
+	kill -HUP "$pid"
+}
+
