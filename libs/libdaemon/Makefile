@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://0pointer.de/lennart/projects/libdaemon/
 PKG_MD5SUM:=509dc27107c21bcd9fbf2f95f5669563
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=autoreconf libtool
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
