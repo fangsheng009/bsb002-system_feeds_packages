@@ -22,8 +22,7 @@ define Package/hiredis
   URL:=https://github.com/redis/hiredis
 endef
 
-ARCH=""
-export ARCH
+export ARCH=
 
 define Build/InstallDev
 	$(MAKE) -C $(PKG_BUILD_DIR) \
