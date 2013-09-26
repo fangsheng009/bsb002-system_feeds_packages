@@ -15,6 +15,8 @@ PKG_SOURCE_MIRROR:=none
 
 PATCH_DIR:=./patches
 
+PKG_FIXUP:=autoreconf libtool
+
 include $(INCLUDE_DIR)/package-version-override.mk
 include $(INCLUDE_DIR)/package.mk
 
