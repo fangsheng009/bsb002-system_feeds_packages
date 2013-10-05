@@ -34,7 +34,7 @@ endef
 # Linux sources directory
 define Build/Prepare
 	$(RM) -r $(PKG_BUILD_DIR)
-	ln -s $(LINUX_DIR)/tools/perf $(PKG_BUILD_DIR)
+	ln -s $(LINUX_SRC_DIR)/tools/perf $(PKG_BUILD_DIR)
 endef
 
 # MAKE_FLAGS should be passed again upon cleaning because Perf's makefile
@@ -60,7 +60,7 @@ MAKE_FLAGS = \
 
 define Package/perf/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(LINUX_DIR)/tools/perf/perf $(1)/usr/bin/
+	$(INSTALL_BIN) $(LINUX_SRC_DIR)/tools/perf/perf $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,perf))
