@@ -16,7 +16,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://pyyaml.org/download/libyaml/
 PKG_MD5SUM:=36c852831d02cf90508c29852361d01b
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=libtool
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
