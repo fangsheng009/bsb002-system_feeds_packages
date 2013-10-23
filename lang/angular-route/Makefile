@@ -42,4 +42,4 @@ define Package/angular-route/install
 	cp $(PKG_BUILD_DIR)/angular-route.min.js $(1)/www/js/
 endef
 
-$(eval $(call BuildPackage,angular-mocks))
+$(eval $(call BuildPackage,angular-route))

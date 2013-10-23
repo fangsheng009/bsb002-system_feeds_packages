@@ -38,14 +38,14 @@ endef
 
 define Package/urijs/install
 	$(INSTALL_DIR) $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/URI.min.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/IPv6.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/SecondLevelDomains.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/URI.fragmentQuery.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/URI.fragmentURI.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/URITemplate.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/jquery.URI.min.js $(1)/www/js/
-	cp $(PKG_BUILD_DIR)src/punycode.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/URI.min.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/IPv6.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/SecondLevelDomains.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/URI.fragmentQuery.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/URI.fragmentURI.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/URITemplate.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/jquery.URI.min.js $(1)/www/js/
+	cp $(PKG_BUILD_DIR)/src/punycode.js $(1)/www/js/
 endef
 
-$(eval $(call BuildPackage,bootstrap))
+$(eval $(call BuildPackage,urijs))
