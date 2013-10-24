@@ -1,7 +1,7 @@
 #!/bin/sh
 # /usr/lib/dynamic_dns/dynamic_dns_updater.sh
 #
-# Copyright (c) 2013 Qualcomm Atheros, Inc.
+# Copyright (c) 2013 The Linux Foundation. All rights reserved.
 # Written by Eric Paul Bishop, Janary 2008
 # Distributed under the terms of the GNU General Public License (GPL) version 2.0
 #

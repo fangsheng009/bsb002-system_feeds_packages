@@ -15,7 +15,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  # Copyright (c) 2000-2002 Fabrice Bellard
  # Copyright (c) 2005-2008 Diego Biurrun
  # Copyright (c) 2005-2008 Mans Rullgard
-+# Copyright (c) 2013 Qualcomm Atheros, Inc.
++# Copyright (c) 2013 The Linux Foundation. All rights reserved.
  #
  
  # Prevent locale nonsense from breaking basic text processing.
@@ -42,7 +42,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 @@ -1,5 +1,6 @@
  /*
   * Provide registration of all codecs, parsers and bitstream filters for libavcodec.
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
   * Copyright (c) 2002 Fabrice Bellard
   *
   * This file is part of FFmpeg.
@@ -60,7 +60,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 @@ -0,0 +1,174 @@
 +/*
 + * AAC decoder wrapper
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + * Copyright (c) 2012 Martin Storsjo
 + *
 + * This file is part of Libav.

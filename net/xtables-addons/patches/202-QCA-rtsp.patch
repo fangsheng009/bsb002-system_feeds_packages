@@ -13,7 +13,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 +++ b/extensions/rtsp/netfilter_helpers.h
 @@ -1,4 +1,6 @@
  /*
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * Helpers for netfiler modules.  This file provides implementations for basic
   * functions such as strncasecmp(), etc.
@@ -57,7 +57,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  /*
   * RTSP extension for IP connection tracking
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
   * (C) 2003 by Tom Marshall <tmarshall at real.com>
   * based on ip_conntrack_irc.c
@@ -157,7 +157,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  /*
   * RTSP extension for TCP NAT alteration
 + *
-+ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
 + *
 + * (C) 2010 Atheros Communications. Inc.
 + *    3/23/2010, <yyu@atheros.com>
