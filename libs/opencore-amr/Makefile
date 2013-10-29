@@ -1,15 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=opencore-amr
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git://git.code.sf.net/p/opencore-amr/code
-PKG_REV:=v0.1.3
-PKG_VERSION:=v0.1.3
+PKG_VERSION:=0.1.3
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=$(PKG_REV)
-PKG_SOURCE_MIRROR:=none
+PKG_SOURCE_URL:=@SF/opencore-amr
+
 PKG_FIXUP:=autoreconf libtool
 
 include $(INCLUDE_DIR)/uclibc++.mk
