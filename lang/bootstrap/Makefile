@@ -6,7 +6,7 @@ PKG_SOURCE_URL:=git://github.com/twbs/bootstrap.git
 PKG_BRANCH:=master
 PKG_RELEASE:=v3.0.0
 
-PKG_REV:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+PKG_REV:=e8a1df5
 PKG_VERSION:=0.1-g$(PKG_REV)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
