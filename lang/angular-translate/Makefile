@@ -6,7 +6,7 @@ PKG_SOURCE_URL:=git://github.com/PascalPrecht/bower-angular-translate.git
 PKG_BRANCH:=master
 PKG_RELEASE:=v1.1.0
 
-PKG_REV:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+PKG_REV:=5969f29
 PKG_VERSION:=0.1-g$(PKG_REV)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
