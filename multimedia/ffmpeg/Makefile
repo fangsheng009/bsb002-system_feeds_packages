@@ -243,7 +243,7 @@ endef
 define Package/libffmpeg-full
 $(call Package/libffmpeg/Default)
  TITLE+= (full)
- DEPENDS+= @BUILD_PATENTED +alsa-lib +fdk-aac
+ DEPENDS+= @BUILD_PATENTED +alsa-lib +fdk-aac +opencore-amr
  VARIANT:=full
 endef
 
@@ -295,8 +295,9 @@ FFMPEG_CONFIGURE:= \
 	--disable-stripping \
 	--enable-zlib \
 	--disable-outdevs \
-	--disable-decoder=aac \
-	--enable-libfdk-aac
+	--enable-libfdk-aac \
+	--enable-libopencore_amrnb \
+	--enable-libopencore_amrwb
 
 ifeq ($(BUILD_VARIANT),custom)
 
