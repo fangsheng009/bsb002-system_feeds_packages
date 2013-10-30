@@ -4,9 +4,9 @@ PKG_NAME:=angular-route
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://github.com/angular/bower-angular-route.git
 PKG_BRANCH:=master
-PKG_RELEASE:=v1.2.0-rc.2
+PKG_RELEASE:=v1.2.0-rc.3
 
-PKG_REV:=$(shell git ls-remote $(PKG_SOURCE_URL) $(PKG_BRANCH) | cut -b -7)
+PKG_REV:=e548b5b
 PKG_VERSION:=0.1-g$(PKG_REV)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
