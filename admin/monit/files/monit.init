@@ -3,7 +3,7 @@
 
 START=60
 SERVICE_USE_PID=1
-CONTROL_FILE="/etc/monitrc"
+CONTROL_FILE="/tmp/monitrc"
 
 
 cfg_append() {
@@ -68,6 +68,7 @@ start() {
 	config_get disabled config disabled "0"
 	[ "$disabled" -eq 0 ] || return 1
 
+	[ -f $CONTROL_FILE ] && return 1
 	create_ctrlfile
 	[ -f $CONTROL_FILE ] || return 1
 
@@ -77,6 +78,7 @@ start() {
 
 stop() {
 	service_stop /usr/bin/monit
+	[ -f $CONTROL_FILE ] && rm -rf $CONTROL_FILE
 }
 
 reload() {
