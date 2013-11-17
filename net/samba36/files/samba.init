@@ -81,6 +81,9 @@ smb_add_share() {
 	[ -n "$guest_ok" ] && echo -e "\tguest ok = $guest_ok" >> /var/etc/smb.conf
 	[ -n "$create_mask" ] && echo -e "\tcreate mask = $create_mask" >> /var/etc/smb.conf
 	[ -n "$dir_mask" ] && echo -e "\tdirectory mask = $dir_mask" >> /var/etc/smb.conf
+
+	echo -e "\tforce user = root" >> /var/etc/smb.conf
+	echo -e "\tforce group = root" >> /var/etc/smb.conf
 }
 
 start() {
