@@ -21,7 +21,7 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_FAAD2_ALWAYS_USE_FLOATING_POINT
 
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=autoreconf libtool
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
