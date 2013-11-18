@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/pcre
 PKG_MD5SUM:=ef907b8792ec7f90f0dcd773848f0b3b
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=autoreconf libtool
 
 PKG_INSTALL:=1
 
