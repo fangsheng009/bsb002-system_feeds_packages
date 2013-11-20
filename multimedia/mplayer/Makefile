@@ -64,6 +64,7 @@ CONFIGURE_ARGS = \
 	--disable-gif \
 	--disable-png \
 	--disable-jpeg \
+	--disable-faad \
 	--disable-ffmpeg_a \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb
