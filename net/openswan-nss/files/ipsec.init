@@ -33,6 +33,7 @@
 START=
 EXTRA_COMMANDS=status
 EXTRA_HELP="	status	Show the status of the service"
+ETH_IFNAME="eth"
 
 # Format a list into a delimited string and print it
 config_list_delimit() {
@@ -384,7 +385,21 @@ unload_ipsec_fastpath() {
 	/etc/init.d/firewall start
 }
 
+enable_jumbo_support() {
+	swconfig dev eth1 set max_frame_size 2000
+
+	ETH_DEVNAME=$(ifconfig |grep ${ETH_IFNAME}|awk '{print $1}')
+
+	for i in ${ETH_DEVNAME}; do
+		ifconfig $i mtu 1664
+	done
+
+	sleep 1
+}
+
+
 start() {
+	enable_jumbo_support
 	ipsec_config_convert
 	script_init start "$@"
 	script_command start "$@"
@@ -402,6 +417,7 @@ restart() {
 	ipsec_config_convert
 	script_init stop "$@"
 	script_command stop "$@"
+	enable_jumbo_support
 	script_command start "$@"
 	load_ipsec_fastpath
 }
