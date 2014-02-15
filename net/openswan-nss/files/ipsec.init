@@ -370,6 +370,14 @@ script_command() {
 	esac
 }
 
+flush_connmgr_rules() {
+	[ -d /sys/module/qca_nss_connmgr_ipv4 ] && {
+		printf "Flushing previous IPv4 rules\n"
+		/etc/init.d/qca-nss-connmgr stop
+		printf "Flushing previous IPv4 rules done\n"
+	}
+}
+
 load_ipsec_fastpath() {
 	/etc/init.d/firewall stop
 	/etc/init.d/qca-nss-connmgr start
@@ -400,6 +408,7 @@ enable_jumbo_support() {
 
 start() {
 	enable_jumbo_support
+	flush_connmgr_rules
 	ipsec_config_convert
 	script_init start "$@"
 	script_command start "$@"
