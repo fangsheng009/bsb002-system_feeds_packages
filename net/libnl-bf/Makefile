@@ -36,7 +36,7 @@ endef
 
 TARGET_CFLAGS += -ffunction-sections $(FPIC)
 
-CONFIGURE_ARGS += --disable-cli
+CONFIGURE_ARGS += --enable-cli
 
 define Build/Configure
 	( cd $(PKG_BUILD_DIR); ./autogen.sh );
