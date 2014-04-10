@@ -41,15 +41,6 @@ define Package/pm-utils/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/pm/pm-functions $(1)/usr/lib/pm-utils/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/pm/functions $(1)/usr/lib/pm-utils/
 
-	$(INSTALL_DIR) $(1)/usr/lib/pm-utils/power.d
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/pm/power.d/* $(1)/usr/lib/pm-utils/power.d/
-
-	$(INSTALL_DIR) $(1)/usr/lib/pm-utils/module.d
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/pm/module.d/* $(1)/usr/lib/pm-utils/module.d/
-
-	$(INSTALL_DIR) $(1)/usr/lib/pm-utils/sleep.d
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/pm/sleep.d/* $(1)/usr/lib/pm-utils/sleep.d
-
 	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/on_ac_power $(1)/sbin
 
