@@ -19,7 +19,7 @@ define Package/redis-server
   CATEGORY:=Utilities
   SUBMENU:=database
   TITLE:=Redis
-  MAINTAINER:=Mo Chen <moc@qualcomm.com>
+  MAINTAINER:=Mo Chen <moc@qca.qualcomm.com>
   URL:=http://redis.io
   DEPENDS:=+libpthread +redis-cli
 endef
@@ -37,7 +37,7 @@ define Package/redis-cli
   CATEGORY:=Utilities
   SUBMENU:=database
   TITLE:=Redis
-  MAINTAINER:=Mo Chen <moc@qualcomm.com>
+  MAINTAINER:=Mo Chen <moc@qca.qualcomm.com>
   URL:=http://redis.io
   DEPENDS:=+libpthread
 endef

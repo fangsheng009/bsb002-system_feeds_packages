@@ -18,7 +18,7 @@ define Package/hiredis
   CATEGORY:=Libraries
   SUBMENU:=database
   TITLE:=hiredis
-  MAINTAINER:=Mo Chen <moc@qualcomm.com>
+  MAINTAINER:=Mo Chen <moc@qca.qualcomm.com>
   URL:=https://github.com/redis/hiredis
 endef
 
