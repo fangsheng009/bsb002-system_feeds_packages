@@ -38,7 +38,9 @@ ac_power()
 
 
 # Sata Power-UP Sequence
-	echo "0"> /sys/devices/platform/msm_sata.0/ahci.0/sata_suspend
+	[ -f /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend ] && {
+		echo 0 > /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend
+	}
 	sleep 1
 	echo "- - -" > /sys/class/scsi_host/host0/scan
 
@@ -113,8 +115,8 @@ battery_power()
 	done
 
 # Sata Power-Down Sequence
-	[ -f /sys/devices/platform/msm_sata.0/ahci.0/sata_suspend ] && {
-		echo "1"> /sys/devices/platform/msm_sata.0/ahci.0/sata_suspend
+	[ -f /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend ] && {
+		echo 1 > /sys/devices/platform/msm_sata.0/ahci.0/msm_sata_suspend
 	}
 
 # USB Power-down Sequence
