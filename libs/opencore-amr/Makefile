@@ -7,7 +7,7 @@ PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/opencore-amr
 
-PKG_FIXUP:=autoreconf libtool
+PKG_FIXUP:=libtool
 
 include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
