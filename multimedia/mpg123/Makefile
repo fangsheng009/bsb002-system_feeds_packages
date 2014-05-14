@@ -33,7 +33,7 @@ define Package/libmpg123
   SECTION:=multimedia
   CATEGORY:=Multimedia
   TITLE:=Fast console MPEG Audio Player and decoder library
-  DEPENDS:=+libltdl
+  DEPENDS:=+libltdl +alsa-lib
 endef
 define Package/libmpg123/description
   This is the fast and Free (LGPL license) real time MPEG Audio
