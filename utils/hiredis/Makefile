@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hiredis
-PKG_VERSION:=0.11.0
+PKG_VERSION:=bf161d996fcab9cf351b2fdb851a9db5f275103b
 PKG_RELEASE:=1
 
-PKG_SOURCE:=v$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/redis/hiredis/archive
-PKG_MD5SUM:=e2ac29509823ccc96990b6fe765b5d46
+PKG_MD5SUM:=c8cca2e52d86c6ed3718de14595e81df
 PKG_CAT:=zcat
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/hiredis-$(PKG_VERSION)
@@ -18,7 +18,7 @@ define Package/hiredis
   CATEGORY:=Libraries
   SUBMENU:=database
   TITLE:=hiredis
-  MAINTAINER:=Mo Chen <moc@qca.qualcomm.com>
+  MAINTAINER:=Cristian Prundeanu <c.p@qca.qualcomm.com>
   URL:=https://github.com/redis/hiredis
 endef
 
