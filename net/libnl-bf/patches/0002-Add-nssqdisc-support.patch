@@ -33,11 +33,11 @@ Signed-off-by: Sakthi Vignesh Radhakrishnan <sradhakr@codeaurora.org>
  create mode 100644 lib/route/qdisc/nssprio.c
  create mode 100644 lib/route/qdisc/nsstbl.c
 
-diff --git a/include/Makefile.am b/include/Makefile.am
-index 79ade11..38d3117 100644
---- a/include/Makefile.am
-+++ b/include/Makefile.am
-@@ -59,6 +59,11 @@ nobase_libnlinclude_HEADERS = \
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/Makefile.am
+===================================================================
+--- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/include/Makefile.am	2014-06-02 10:14:47.164116435 -0500
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/Makefile.am	2014-06-02 10:14:47.156116435 -0500
+@@ -59,6 +59,11 @@
  	netlink/route/qdisc/codel.h \
  	netlink/route/qdisc/fq_codel.h \
  	netlink/route/qdisc/plug.h \
@@ -49,11 +49,11 @@ index 79ade11..38d3117 100644
  	netlink/route/addr.h \
  	netlink/route/class.h \
  	netlink/route/classifier.h \
-diff --git a/include/linux/pkt_sched.h b/include/linux/pkt_sched.h
-index a614d99..2e89cc2 100644
---- a/include/linux/pkt_sched.h
-+++ b/include/linux/pkt_sched.h
-@@ -754,5 +754,96 @@ struct tc_bf_xstats {
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/linux/pkt_sched.h
+===================================================================
+--- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/include/linux/pkt_sched.h	2014-06-02 10:14:47.164116435 -0500
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/linux/pkt_sched.h	2014-06-02 10:14:47.156116435 -0500
+@@ -754,5 +754,96 @@
  
  #define TCA_BF_MAX      (__TCA_BF_MAX - 1)
  
@@ -150,11 +150,11 @@ index a614d99..2e89cc2 100644
 +};
  
  #endif
-diff --git a/include/netlink-types.h b/include/netlink-types.h
-index ea38faf..f8e318e 100644
---- a/include/netlink-types.h
-+++ b/include/netlink-types.h
-@@ -646,6 +646,47 @@ struct rtnl_sfb
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink-types.h
+===================================================================
+--- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/include/netlink-types.h	2014-06-02 10:14:47.164116435 -0500
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink-types.h	2014-06-02 10:14:47.156116435 -0500
+@@ -646,6 +646,47 @@
  	uint32_t	qsb_mask;
  };
  
@@ -202,12 +202,11 @@ index ea38faf..f8e318e 100644
  struct rtnl_netem_corr
  {
  	uint32_t	nmc_delay;
-diff --git a/include/netlink/route/qdisc/nssbf.h b/include/netlink/route/qdisc/nssbf.h
-new file mode 100644
-index 0000000..52861b5
---- /dev/null
-+++ b/include/netlink/route/qdisc/nssbf.h
-@@ -0,0 +1,38 @@
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssbf.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssbf.h	2014-06-02 10:18:17.932120392 -0500
+@@ -0,0 +1,41 @@
 +/*
 + * netlink/route/sch/nssbf.h	NSSBF Qdisc
 + *
@@ -241,16 +240,18 @@ index 0000000..52861b5
 +extern int rtnl_nssbf_class_set_mtu(struct rtnl_class *class, uint32_t mtu);
 +extern uint32_t rtnl_nssbf_class_get_mtu(struct rtnl_class *class);
 +
++extern int rtnl_nssbf_class_set_quantum(struct rtnl_class *class, uint32_t q);
++extern uint32_t rtnl_nssbf_class_get_quantum(struct rtnl_class *class);
++
 +#ifdef __cplusplus
 +}
 +#endif
 +
 +#endif
-diff --git a/include/netlink/route/qdisc/nsscodel.h b/include/netlink/route/qdisc/nsscodel.h
-new file mode 100644
-index 0000000..89e2e14
---- /dev/null
-+++ b/include/netlink/route/qdisc/nsscodel.h
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsscodel.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsscodel.h	2014-06-02 10:14:47.156116435 -0500
 @@ -0,0 +1,38 @@
 +/*
 + * netlink/route/sch/nsscodel.h	NSSCODEL Qdisc
@@ -290,11 +291,10 @@ index 0000000..89e2e14
 +#endif
 +
 +#endif
-diff --git a/include/netlink/route/qdisc/nssfifo.h b/include/netlink/route/qdisc/nssfifo.h
-new file mode 100644
-index 0000000..0b4290d
---- /dev/null
-+++ b/include/netlink/route/qdisc/nssfifo.h
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssfifo.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssfifo.h	2014-06-02 10:14:47.156116435 -0500
 @@ -0,0 +1,32 @@
 +/*
 + * netlink/route/sch/nssfifo.c	NSSFIFO Qdisc
@@ -328,11 +328,10 @@ index 0000000..0b4290d
 +#endif
 +
 +#endif
-diff --git a/include/netlink/route/qdisc/nssprio.h b/include/netlink/route/qdisc/nssprio.h
-new file mode 100644
-index 0000000..5330f48
---- /dev/null
-+++ b/include/netlink/route/qdisc/nssprio.h
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssprio.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssprio.h	2014-06-02 10:14:47.156116435 -0500
 @@ -0,0 +1,29 @@
 +/*
 + * netlink/route/sch/nssprio.h	NSSPRIO Qdisc
@@ -363,11 +362,10 @@ index 0000000..5330f48
 +#endif
 +
 +#endif
-diff --git a/include/netlink/route/qdisc/nsstbl.h b/include/netlink/route/qdisc/nsstbl.h
-new file mode 100644
-index 0000000..6137f88
---- /dev/null
-+++ b/include/netlink/route/qdisc/nsstbl.h
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsstbl.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsstbl.h	2014-06-02 10:14:47.156116435 -0500
 @@ -0,0 +1,38 @@
 +/*
 + * netlink/route/sch/nsstbl.h	NSSTBL Qdisc
@@ -407,11 +405,11 @@ index 0000000..6137f88
 +#endif
 +
 +#endif
-diff --git a/lib/Makefile.am b/lib/Makefile.am
-index cc88227..1a4c440 100644
---- a/lib/Makefile.am
-+++ b/lib/Makefile.am
-@@ -76,6 +76,8 @@ libnl_route_3_la_SOURCES = \
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am
+===================================================================
+--- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/lib/Makefile.am	2014-06-02 10:14:47.164116435 -0500
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am	2014-06-02 10:14:47.156116435 -0500
+@@ -76,6 +76,8 @@
  	route/qdisc/hfsc.c route/qdisc/codel.c route/qdisc/fq_codel.c \
  	route/qdisc/drr.c \
  	route/qdisc/bf.c \
@@ -420,7 +418,7 @@ index cc88227..1a4c440 100644
  	\
  	fib_lookup/lookup.c fib_lookup/request.c \
  	\
-@@ -108,6 +110,7 @@ nobase_pkglib_LTLIBRARIES = \
+@@ -108,6 +110,7 @@
  	cli/qdisc/pfifo.la \
  	cli/qdisc/plug.la \
  	cli/qdisc/bfifo.la \
@@ -428,7 +426,7 @@ index cc88227..1a4c440 100644
  	cli/cls/basic.la \
  	cli/cls/cgroup.la
  
-@@ -118,6 +121,7 @@ cli_qdisc_blackhole_la_LDFLAGS = -module -avoid-version
+@@ -118,6 +121,7 @@
  cli_qdisc_pfifo_la_LDFLAGS = -module -avoid-version
  cli_qdisc_plug_la_LDFLAGS = -module -avoid-version
  cli_qdisc_bfifo_la_LDFLAGS = -module -avoid-version
@@ -436,11 +434,10 @@ index cc88227..1a4c440 100644
  cli_cls_basic_la_LDFLAGS = -module -avoid-version
  cli_cls_cgroup_la_LDFLAGS = -module -avoid-version
  endif
-diff --git a/lib/cli/qdisc/nsspfifo.c b/lib/cli/qdisc/nsspfifo.c
-new file mode 100644
-index 0000000..3843fd8
---- /dev/null
-+++ b/lib/cli/qdisc/nsspfifo.c
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/cli/qdisc/nsspfifo.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/cli/qdisc/nsspfifo.c	2014-06-02 10:14:47.156116435 -0500
 @@ -0,0 +1,84 @@
 +/*
 + * src/lib/nsspfifo.c     	nsspfifo module for CLI lib
@@ -526,12 +523,11 @@ index 0000000..3843fd8
 +{
 +	nl_cli_tc_unregister(&nsspfifo_module);
 +}
-diff --git a/lib/route/qdisc/nssbf.c b/lib/route/qdisc/nssbf.c
-new file mode 100644
-index 0000000..7b0386e
---- /dev/null
-+++ b/lib/route/qdisc/nssbf.c
-@@ -0,0 +1,367 @@
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssbf.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssbf.c	2014-06-02 10:23:40.232126443 -0500
+@@ -0,0 +1,403 @@
 +/*
 + * lib/route/qdisc/nssbf.c		NSSBF Qdisc
 + *
@@ -742,7 +738,7 @@ index 0000000..7b0386e
 +uint32_t rtnl_nssbf_qdisc_get_defcls(struct rtnl_qdisc *qdisc)
 +{
 +	struct rtnl_nssbf_qdisc *nssbf_qdisc;
-+	
++
 +	if ((nssbf_qdisc = rtnl_tc_data(TC_CAST(qdisc))) &&
 +		(nssbf_qdisc->awv_mask & NSSBF_QDISC_ATTR_DEFCLS)) {
 +
@@ -778,7 +774,7 @@ index 0000000..7b0386e
 +uint32_t rtnl_nssbf_class_get_rate(struct rtnl_class *class)
 +{
 +	struct rtnl_nssbf_class *nssbf_class;
-+	
++
 +	if ((nssbf_class = rtnl_tc_data(TC_CAST(class))) &&
 +		(nssbf_class->ery_mask & NSSBF_CLASS_ATTR_RATE)) {
 +
@@ -814,7 +810,7 @@ index 0000000..7b0386e
 +uint32_t rtnl_nssbf_class_get_burst(struct rtnl_class *class)
 +{
 +	struct rtnl_nssbf_class *nssbf_class;
-+	
++
 +	if ((nssbf_class = rtnl_tc_data(TC_CAST(class))) &&
 +		(nssbf_class->ery_mask & NSSBF_CLASS_ATTR_BURST)) {
 +
@@ -850,11 +846,47 @@ index 0000000..7b0386e
 +uint32_t rtnl_nssbf_class_get_mtu(struct rtnl_class *class)
 +{
 +	struct rtnl_nssbf_class *nssbf_class;
-+	
++
 +	if ((nssbf_class = rtnl_tc_data(TC_CAST(class))) &&
 +		(nssbf_class->ery_mask & NSSBF_CLASS_ATTR_MTU)) {
 +
 +		return nssbf_class->ery_mtu;
++	}
++
++	return 0;
++}
++
++/**
++ * Set quantum of NSSBF qdisc.
++ * @arg qdisc		NSSBF qdisc to be modified
++ * @arg quantum		New quantum
++ * @return 0 on success or a negative error code.
++ */
++int rtnl_nssbf_class_set_quantum(struct rtnl_class *class, uint32_t quantum)
++{
++	struct rtnl_nssbf_class *nssbf_class;
++
++	if (!(nssbf_class = rtnl_tc_data(TC_CAST(class))))
++		return -NLE_NOMEM;
++
++	nssbf_class->ery_quantum = quantum;
++	nssbf_class->ery_mask |= NSSBF_CLASS_ATTR_QUANTUM;
++	return 0;
++}
++
++/**
++ * Get quantum of a NSSBF qdisc.
++ * @arg qdisc		NSSBF qdisc.
++ * @return configured quantum
++ */
++uint32_t rtnl_nssbf_class_get_quantum(struct rtnl_class *class)
++{
++	struct rtnl_nssbf_class *nssbf_class;
++
++	if ((nssbf_class = rtnl_tc_data(TC_CAST(class))) &&
++		(nssbf_class->ery_mask & NSSBF_CLASS_ATTR_QUANTUM)) {
++
++		return nssbf_class->ery_quantum;
 +	}
 +
 +	return 0;
@@ -899,11 +931,10 @@ index 0000000..7b0386e
 +}
 +
 +/** @} */
-diff --git a/lib/route/qdisc/nsscodel.c b/lib/route/qdisc/nsscodel.c
-new file mode 100644
-index 0000000..4b4ac37
---- /dev/null
-+++ b/lib/route/qdisc/nsscodel.c
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsscodel.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsscodel.c	2014-06-02 10:14:47.156116435 -0500
 @@ -0,0 +1,304 @@
 +/*
 + * lib/route/qdisc/nsscodel.c		NSSCODEL Qdisc
@@ -1209,11 +1240,10 @@ index 0000000..4b4ac37
 +}
 +
 +/** @} */
-diff --git a/lib/route/qdisc/nssfifo.c b/lib/route/qdisc/nssfifo.c
-new file mode 100644
-index 0000000..134167b
---- /dev/null
-+++ b/lib/route/qdisc/nssfifo.c
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssfifo.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssfifo.c	2014-06-02 10:14:47.160116435 -0500
 @@ -0,0 +1,208 @@
 +/*
 + * lib/route/qdisc/nssfifo.c
@@ -1423,11 +1453,10 @@ index 0000000..134167b
 +}
 +
 +/** @} */
-diff --git a/lib/route/qdisc/nssprio.c b/lib/route/qdisc/nssprio.c
-new file mode 100644
-index 0000000..5dab882
---- /dev/null
-+++ b/lib/route/qdisc/nssprio.c
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssprio.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssprio.c	2014-06-02 10:14:47.160116435 -0500
 @@ -0,0 +1,154 @@
 +/*
 + * lib/route/qdisc/nssprio.c		NSSPRIO Qdisc/Class
@@ -1583,11 +1612,10 @@ index 0000000..5dab882
 +}
 +
 +/** @} */
-diff --git a/lib/route/qdisc/nsstbl.c b/lib/route/qdisc/nsstbl.c
-new file mode 100644
-index 0000000..11d93fd
---- /dev/null
-+++ b/lib/route/qdisc/nsstbl.c
+Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsstbl.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsstbl.c	2014-06-02 10:14:47.160116435 -0500
 @@ -0,0 +1,323 @@
 +/*
 + * lib/route/qdisc/nsstbl.c		NSSTBL Qdisc
@@ -1912,6 +1940,3 @@ index 0000000..11d93fd
 +}
 +
 +/** @} */
--- 
-1.8.4.2
-
