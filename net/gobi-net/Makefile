@@ -34,6 +34,10 @@ define Build/Prepare
 	$(call Build/Prepare/Default)
 endef
 
+ifeq ($(ARCH_PACKAGES),ipq806x)
+	EXTRA_CFLAGS+=-I$(STAGING_DIR)/usr/include/qca-nss-drv
+endif
+
 define Build/Compile
 	$(MAKE) -C "$(LINUX_DIR)" \
 		CROSS_COMPILE="$(TARGET_CROSS)" \
