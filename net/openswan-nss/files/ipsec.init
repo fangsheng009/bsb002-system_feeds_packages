@@ -371,7 +371,7 @@ script_command() {
 
 load_ipsec_fastpath() {
 	/etc/init.d/firewall stop
-	/etc/init.d/qca-nss-connmgr start
+	/etc/init.d/qca-nss-ecm start
 	[ -d /sys/module/qca_nss_ipsec ] || insmod qca-nss-ipsec
 }
 
@@ -380,7 +380,7 @@ unload_ipsec_fastpath() {
 		rmmod qca_nss_ipsec
 		sleep 1
 	}
-	/etc/init.d/qca-nss-connmgr stop
+	/etc/init.d/qca-nss-ecm stop
 	/etc/init.d/firewall start
 }
 
