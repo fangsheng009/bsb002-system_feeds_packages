@@ -696,7 +696,7 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssbf.
 +	}
 +
 +	if (nssbf->ery_mask & NSSBF_CLASS_ATTR_QUANTUM) {
-+		opts.rate = nssbf->ery_quantum;
++		opts.quantum = nssbf->ery_quantum;
 +	}
 +
 +	NLA_PUT(msg, TCA_NSSBF_CLASS_PARMS, sizeof(opts), &opts);
