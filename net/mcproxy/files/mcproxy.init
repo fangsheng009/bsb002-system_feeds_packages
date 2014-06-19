@@ -22,16 +22,12 @@ mcproxy_pinstance() {
 
 	#default WAN
 	[ -n "$upstream" ] || {
-		config_load network
-		config_get upstream wan ifname
-		uci_set_state mcproxy $1 upstream "$upstream"
+		upstream=$(uci_get_state network wan ifname wan)
 	}
 
 	#default LAN
         [ -n "$downstreams" ] || {
-		config_load network
-		config_get downstreams lan ifname
-		uci_set_state mcproxy $1 downstreams "$downstreams"
+		downstreams=$(uci_get_state network lan ifname lan)
         }
 
 	echo "pinstance $instname: \"$upstream\" ==> \"$downstreams\";" >>$CONF_FILE
