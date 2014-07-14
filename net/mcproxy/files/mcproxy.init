@@ -52,9 +52,14 @@ start() {
 	echo "protocol $protocol;" >$CONF_FILE
 
 	config_foreach mcproxy_pinstance pinstance
+	#workaround for CR689700
+	#mcrpoxy will exit with signal ABRT when network interfaces are not prepared.
+	#The root cause is GCC4.6 didn't handle throw/catch mechanism well.
+	rm -f /tmp/mcproxy.*.core
 	service_start /usr/sbin/mcproxy -f $CONF_FILE
 }
 
 stop() {
 	service_stop /usr/sbin/mcproxy
+	rm -f /tmp/mcproxy.*.core
 }
