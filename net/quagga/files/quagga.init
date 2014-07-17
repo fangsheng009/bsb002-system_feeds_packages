@@ -17,7 +17,9 @@ ripd_iface_set_interface() {
 	local name ifname
 
 	config_get name ${cfg} name
-	network_get_physdev ifname $name
+	network_get_device ifname $name
+	[ -n "${ifname}" ] || return
+
 	echo "interface ${ifname}" >> ${conffile}
 
 	config_get receive_version ${cfg} receive_version
@@ -35,7 +37,9 @@ ripd_iface_set_no_passive() {
 
 	local name ifname
 	config_get name ${cfg} name
-	network_get_physdev ifname ${name}
+	network_get_device ifname ${name}
+	[ -n "${ifname}" ] || return
+
 	echo " network ${ifname}" >> ${conffile}
 	echo " no passive-interface ${ifname}" >> ${conffile}
 }
