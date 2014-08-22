@@ -2,12 +2,12 @@
 # IPsec startup and shutdown script
 # Copyright (C) 1998, 1999, 2001  Henry Spencer.
 # Copyright (C) 2002			  Michael Richardson <mcr@freeswan.org>
-# 
+#
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -281,11 +281,11 @@ script_init() {
 
 	if test " $IPSEC_confreadstatus" != " "
 	then
-		case $1 in 
-		stop|--stop|_autostop) 
+		case $1 in
+		stop|--stop|_autostop)
 		echo "$IPSEC_confreadstatus -- \`$1' may not work" |
 			logger -s -p daemon.error -t ipsec_setup;;
-			
+
 		*) echo "$IPSEC_confreadstatus -- \`$1' aborted" |
 			logger -s -p daemon.error -t ipsec_setup;
 		exit 1;;
@@ -308,7 +308,7 @@ script_command() {
 	# do it
 	case "$1" in
 	start|--start|stop|--stop|_autostop|_autostart)
-		# remove for: @cygwin_START@ 
+		# remove for: @cygwin_START@
 		# portable way for checking for root
 		if [ ! -w / ]
 		then
@@ -369,9 +369,17 @@ script_command() {
 	esac
 }
 
-load_ipsec_fastpath() {
+load_nss_fastpath() {
 	/etc/init.d/firewall stop
 	/etc/init.d/qca-nss-ecm start
+}
+
+unload_nss_fastpath() {
+	/etc/init.d/qca-nss-ecm stop
+	/etc/init.d/firewall start
+}
+
+load_ipsec_fastpath() {
 	[ -d /sys/module/qca_nss_ipsec ] || insmod qca-nss-ipsec
 }
 
@@ -380,30 +388,26 @@ unload_ipsec_fastpath() {
 		rmmod qca_nss_ipsec
 		sleep 1
 	}
-	/etc/init.d/qca-nss-ecm stop
-	/etc/init.d/firewall start
 }
 
 start() {
 	ipsec_config_convert
 	script_init start "$@"
 	script_command start "$@"
+	load_nss_fastpath
 	load_ipsec_fastpath
 }
 
 stop() {
-	unload_ipsec_fastpath
+	unload_nss_fastpath
 	script_init stop "$@"
 	script_command stop "$@"
+	unload_ipsec_fastpath
 }
 
 restart() {
-	unload_ipsec_fastpath
-	ipsec_config_convert
-	script_init stop "$@"
-	script_command stop "$@"
-	script_command start "$@"
-	load_ipsec_fastpath
+	stop
+	start
 }
 
 status() {
