@@ -14,6 +14,7 @@ mcproxy_pinstance() {
 	config_get instname $1 name
 	config_get upstream $1 upstream
 	config_get downstreams $1 downstreams
+	config_get protocol config protocol "IGMPv3"
 
 	#section name as instance name
 	[ -n "$instname" ] || {
@@ -32,16 +33,19 @@ mcproxy_pinstance() {
 
 	echo "pinstance $instname: \"$upstream\" ==> \"$downstreams\";" >>$CONF_FILE
 
-	#ignore UPNP group from the downstream side
-	echo "" >>$CONF_FILE
-	echo "table upnp{" >>$CONF_FILE
-	echo "  (239.255.255.250|*)" >>$CONF_FILE
-	echo "};" >>$CONF_FILE
+	#protocol string beginning with 'IGMP' (ipv4)
+	if [ "${protocol#IGMP}" != "$protocol" ]; then
+		#ignore UPNP group from the downstream side
+		echo "" >>$CONF_FILE
+		echo "table upnp{" >>$CONF_FILE
+		echo "  (239.255.255.250|*)" >>$CONF_FILE
+		echo "};" >>$CONF_FILE
 
-	echo "" >>$CONF_FILE
-	for downif in $downstreams; do
-		echo "pinstance $instname downstream \"$downif\" in blacklist table upnp;" >>$CONF_FILE
-	done
+		echo "" >>$CONF_FILE
+		for downif in $downstreams; do
+			echo "pinstance $instname downstream \"$downif\" in blacklist table upnp;" >>$CONF_FILE
+		done
+	fi
 }
 
 start() {
