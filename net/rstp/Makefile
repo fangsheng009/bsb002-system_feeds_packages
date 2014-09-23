@@ -26,6 +26,7 @@ define Package/rstp
   MAINTAINER:=Stephen Hemminger <shemminger@vyatta.com>
   URL:=http://git.kernel.org/cgit/linux/kernel/git/shemminger/rstp.git/
   TITLE:=Rapid Spanning Tree Protocol implement
+  DEPENDS:=+kmod-qca-ssdk-nohnat
 endef
 
 TARGET_CFLAGS += \
