@@ -25,7 +25,7 @@ define Package/pure-ftpd/Default
   SUBMENU:=File Transfer
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libelf +@BUSYBOX_CONFIG_ADDUSER +@BUSYBOX_CONFIG_DELUSER \
+  DEPENDS:=+libelf1 +@BUSYBOX_CONFIG_ADDUSER +@BUSYBOX_CONFIG_DELUSER \
 	   +@BUSYBOX_CONFIG_ADDGROUP +@BUSYBOX_CONFIG_DELGROUP
   TITLE:=Secure FTP made easy!
   URL:=http://www.pureftpd.org/project/pure-ftpd
