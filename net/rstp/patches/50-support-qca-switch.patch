@@ -762,7 +762,7 @@ index 0000000..038d04e
 +	* "received packet on eth1 with own address as source address", so to avoid this warning, here crack the source mac of BPDU
 +	* to let it not same with eth1.
 +	*/
-+	new_data[HWADDR_SIZE] = (new_data[HWADDR_SIZE] | 0x08);
++	new_data[HWADDR_SIZE] = (new_data[HWADDR_SIZE] ^ 0x08);
 +	/*copy atheros header type*/
 +	memcpy(new_data + ATHEROS_HEADER_TYPE_OFFSET, &type, sizeof(type));
 +	/*copy atheros header information*/
