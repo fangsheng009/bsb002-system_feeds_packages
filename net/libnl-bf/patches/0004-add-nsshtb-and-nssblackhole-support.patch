@@ -12,10 +12,30 @@ index 38d3117..6910994 100644
  	netlink/route/class.h \
  	netlink/route/classifier.h \
 diff --git a/include/linux/pkt_sched.h b/include/linux/pkt_sched.h
-index 2e89cc2..c09f97b 100644
+index 2e89cc2..3d43a9b 100644
 --- a/include/linux/pkt_sched.h
 +++ b/include/linux/pkt_sched.h
-@@ -846,4 +846,43 @@ struct tc_nssbf_qopt {
+@@ -1,3 +1,19 @@
++/*
++ **************************************************************************
++ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
++ */
++
+ #ifndef __LINUX_PKT_SCHED_H
+ #define __LINUX_PKT_SCHED_H
+ 
+@@ -846,4 +862,43 @@ struct tc_nssbf_qopt {
  	__u16	defcls;		/* Default class value */
  };
  
@@ -60,10 +80,31 @@ index 2e89cc2..c09f97b 100644
 +
  #endif
 diff --git a/include/netlink-types.h b/include/netlink-types.h
-index 6ed55c9..5bf1a4d 100644
+index 6ed55c9..a5bb556 100644
 --- a/include/netlink-types.h
 +++ b/include/netlink-types.h
-@@ -687,6 +687,28 @@ struct rtnl_nssbf_qdisc {
+@@ -1,4 +1,20 @@
+ /*
++ **************************************************************************
++ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
++ */
++
++/*
+  * netlink-types.h	Netlink Types (Private)
+  *
+  *	This library is free software; you can redistribute it and/or
+@@ -687,6 +703,28 @@ struct rtnl_nssbf_qdisc {
  	uint32_t	awv_mask;
  };
  
@@ -94,19 +135,24 @@ index 6ed55c9..5bf1a4d 100644
  	uint32_t	nmc_delay;
 diff --git a/include/netlink/route/qdisc/nssblackhole.h b/include/netlink/route/qdisc/nssblackhole.h
 new file mode 100644
-index 0000000..86e3bc1
+index 0000000..586a8be
 --- /dev/null
 +++ b/include/netlink/route/qdisc/nssblackhole.h
-@@ -0,0 +1,29 @@
+@@ -0,0 +1,34 @@
 +/*
-+ * netlink/route/sch/nssblackhole.c	NSSBLACKHOLE Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ **************************************************************************
++ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSBLACKHOLE_H_
@@ -129,19 +175,24 @@ index 0000000..86e3bc1
 +#endif
 diff --git a/include/netlink/route/qdisc/nsshtb.h b/include/netlink/route/qdisc/nsshtb.h
 new file mode 100644
-index 0000000..d55eb6c
+index 0000000..2316696
 --- /dev/null
 +++ b/include/netlink/route/qdisc/nsshtb.h
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,55 @@
 +/*
-+ * netlink/route/sch/nsshtb.h	NSSHTB Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ **************************************************************************
++ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSHTB_H_
@@ -197,19 +248,24 @@ index 1a4c440..cffd243 100644
  	\
 diff --git a/lib/route/qdisc/nssblackhole.c b/lib/route/qdisc/nssblackhole.c
 new file mode 100644
-index 0000000..6b50ec3
+index 0000000..4202062
 --- /dev/null
 +++ b/lib/route/qdisc/nssblackhole.c
-@@ -0,0 +1,164 @@
+@@ -0,0 +1,169 @@
 +/*
-+ * lib/route/qdisc/nssblackhole.c
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ **************************************************************************
++ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
@@ -367,19 +423,24 @@ index 0000000..6b50ec3
 +/** @} */
 diff --git a/lib/route/qdisc/nsshtb.c b/lib/route/qdisc/nsshtb.c
 new file mode 100644
-index 0000000..67ada37
+index 0000000..b90a993
 --- /dev/null
 +++ b/lib/route/qdisc/nsshtb.c
-@@ -0,0 +1,545 @@
+@@ -0,0 +1,550 @@
 +/*
-+ * lib/route/qdisc/nsshtb.c		NSSHTB Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ **************************************************************************
++ * Copyright (c) 2014, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
