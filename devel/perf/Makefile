@@ -56,7 +56,8 @@ MAKE_FLAGS = \
 	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
 	V=1 \
-	prefix=/usr
+	prefix=/usr \
+	WERROR=0
 
 define Package/perf/install
 	$(INSTALL_DIR) $(1)/usr/bin
