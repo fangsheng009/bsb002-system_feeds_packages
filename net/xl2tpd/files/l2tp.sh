@@ -16,6 +16,7 @@ proto_l2tp_init_config() {
 	proto_config_add_boolean "ipv6"
 	proto_config_add_int "mtu"
 	proto_config_add_string "server"
+	proto_config_add_string "encap"
 	available=1
 	no_device=1
 }
@@ -25,7 +26,15 @@ proto_l2tp_setup() {
 	local iface="$2"
 	local optfile="/tmp/l2tp/options.${config}"
 
-	local ip serv_addr server
+	local ip serv_addr server encap
+	json_get_var encap encap
+	[ "$encap" = "udp" ] || {
+		echo "don't support encapsulation other than udp"
+		sleep 5
+		proto_setup_failed "$config"
+		exit 1
+	}
+
 	json_get_var server server && {
 		for ip in $(resolveip -t 5 "$server"); do
 			( proto_add_host_dependency "$config" "$ip" )
