@@ -1,5 +1,1 @@
-. /lib/functions/network.sh
-network_get_physdev waniface "wan"
-network_get_device laniface "lan"
-
-OPTIONS="-C $laniface -S $waniface"
+OPTIONS="-C eth2 -S vlan1"
