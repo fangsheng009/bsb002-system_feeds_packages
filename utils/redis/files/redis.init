@@ -54,6 +54,7 @@ stop() {
 	        else
 			kill $PID
 	        fi
+	        rm -f $PIDFILE 2>/dev/null
                 echo "Redis stopped"
         fi
 	retval=$?
