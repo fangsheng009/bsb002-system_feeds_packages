@@ -1,6 +1,7 @@
---- a/linux/include/openswan/ipsec_esp.h
-+++ b/linux/include/openswan/ipsec_esp.h
-@@ -65,6 +65,11 @@ struct esphdr
+diff -Nur a/linux/include/openswan/ipsec_esp.h b/linux/include/openswan/ipsec_esp.h
+--- a/linux/include/openswan/ipsec_esp.h	2015-02-04 15:14:53.169217709 -0800
++++ b/linux/include/openswan/ipsec_esp.h	2015-02-04 15:22:29.477229200 -0800
+@@ -65,6 +65,11 @@
  	__u8	esp_iv[8];		/* iv */
  };
  
@@ -12,9 +13,10 @@
  extern struct xform_functions esp_xform_funcs[];
  
  extern enum ipsec_rcv_value ipsec_rcv_esp_post_decrypt(struct ipsec_rcv_state *irs);
---- a/linux/net/ipsec/ipsec_esp.c
-+++ b/linux/net/ipsec/ipsec_esp.c
-@@ -165,6 +165,10 @@ ipsec_rcv_esp_authcalc(struct ipsec_rcv_
+diff -Nur a/linux/net/ipsec/ipsec_esp.c b/linux/net/ipsec/ipsec_esp.c
+--- a/linux/net/ipsec/ipsec_esp.c	2015-02-04 15:14:53.169217709 -0800
++++ b/linux/net/ipsec/ipsec_esp.c	2015-02-04 15:22:29.477229200 -0800
+@@ -156,6 +156,10 @@
  		SHA1_CTX	sha1;
  	} tctx;
  
@@ -25,9 +27,10 @@
  #ifdef CONFIG_KLIPS_OCF
  	if (irs->ipsp->ocf_in_use)
  		return(ipsec_ocf_rcv(irs));
---- a/linux/net/ipsec/ipsec_tunnel.c
-+++ b/linux/net/ipsec/ipsec_tunnel.c
-@@ -2146,7 +2146,7 @@ ipsec_tunnel_init(struct net_device *dev
+diff -Nur a/linux/net/ipsec/ipsec_tunnel.c b/linux/net/ipsec/ipsec_tunnel.c
+--- a/linux/net/ipsec/ipsec_tunnel.c	2015-02-04 15:14:53.169217709 -0800
++++ b/linux/net/ipsec/ipsec_tunnel.c	2015-02-04 15:22:29.477229200 -0800
+@@ -2022,7 +2022,7 @@
  	dev->hard_header_len 	= 0;
  	dev->mtu		= 0;
  	dev->addr_len		= 0;
@@ -36,7 +39,7 @@
  	dev->tx_queue_len	= 10;		/* Small queue */
  #ifdef IFF_XMIT_DST_RELEASE
  	dev->priv_flags	       &= ~IFF_XMIT_DST_RELEASE;
-@@ -2590,7 +2590,7 @@ ipsec_tunnel_attach(struct net_device *d
+@@ -2445,7 +2445,7 @@
  	prv->mtu = physdev->mtu;
  
  #ifdef PHYSDEV_TYPE
@@ -45,14 +48,13 @@
  #endif /*  PHYSDEV_TYPE */
  
  	dev->addr_len = physdev->addr_len;
---- a/linux/net/ipsec/ipsec_xmit.c
-+++ b/linux/net/ipsec/ipsec_xmit.c
-@@ -940,7 +940,10 @@ ipsec_xmit_esp(struct ipsec_xmit_state *
- 		osw_ip6_hdr(ixs)->nexthdr = IPPROTO_ESP;
+diff -Nur a/linux/net/ipsec/ipsec_xmit.c b/linux/net/ipsec/ipsec_xmit.c
+--- a/linux/net/ipsec/ipsec_xmit.c	2015-02-04 15:14:53.169217709 -0800
++++ b/linux/net/ipsec/ipsec_xmit.c	2015-02-04 15:25:04.941233115 -0800
+@@ -882,6 +882,9 @@
  	else
  		osw_ip4_hdr(ixs)->protocol = IPPROTO_ESP;
--	
-+
+ 
 +	((struct ipsec_skb_cb *)ixs->skb->cb)->tunnel_dev = ixs->dev;
 +	((struct ipsec_skb_cb *)ixs->skb->cb)->eth_dev = ixs->iprv->dev;
 +
