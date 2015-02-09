@@ -92,6 +92,8 @@ proto_l2tp_setup() {
 	echo "${ipv6:++ipv6} ${pppd_options}" >> "${optfile}"
 	echo "${mtu:+mtu $mtu mru $mtu}" >> "${optfile}"
 
+	/etc/init.d/xl2tpd restart
+	sleep 1
 	xl2tpd-control add l2tp-${config} pppoptfile=${optfile} lns=${server} redial=yes redial timeout=20
 	xl2tpd-control connect l2tp-${config}
 }
