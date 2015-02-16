@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=ftp://ftp.astron.com/pub/file/
 PKG_MD5SUM:=16a407bd66d6c7a832f3a5c0d609c27b
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=libtool
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
