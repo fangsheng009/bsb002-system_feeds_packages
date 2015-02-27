@@ -29,6 +29,7 @@ proto_l2tp_setup() {
 	json_get_var server server && {
 		for ip in $(resolveip -t 5 "$server"); do
 			( proto_add_host_dependency "$config" "$ip" )
+			echo "$ip" >> /tmp/server.l2tp-${config}
 			serv_addr=1
 		done
 	}
@@ -80,6 +81,8 @@ proto_l2tp_setup() {
 proto_l2tp_teardown() {
 	local interface="$1"
 	local optfile="/tmp/l2tp/options.${interface}"
+
+	rm -f /tmp/server.l2tp-${interface}
 
 	case "$ERROR" in
 		11|19)
