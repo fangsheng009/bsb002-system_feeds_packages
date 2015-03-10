@@ -5,7 +5,6 @@
 	server string = |DESCRIPTION|
 	unix charset = |CHARSET|
 	workgroup = |WORKGROUP|
-	bind interfaces only = yes
 	browseable = yes
 	deadtime = 30
 	domain master = yes
