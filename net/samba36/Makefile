@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2012 OpenWrt.org
+# Copyright (C) 2007-2014 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,13 +8,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=samba
-PKG_VERSION:=3.6.5
-PKG_RELEASE:=3
+PKG_VERSION:=3.6.25
+PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=http://ftp.samba.org/pub/samba \
-	http://ftp.samba.org/pub/samba/old-versions
+	http://ftp.samba.org/pub/samba/stable
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=2f0c14547333c1b48fd4728b031e7040
+PKG_MD5SUM:=76da2fa64edd94a0188531e7ecb27c4e
+
+PKG_LICENSE:=GPL-3.0
+PKG_LICENSE_FILES:=COPYING
+
+PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
+
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -42,7 +49,7 @@ endef
 define Package/samba36-server/config
 	config PACKAGE_SAMBA_MAX_DEBUG_LEVEL
 		int "Maximum level of compiled-in debug messages"
-		depends PACKAGE_samba36-server || PACKAGE_samba36-client
+		depends on PACKAGE_samba36-server || PACKAGE_samba36-client
 		default -1
 
 endef
@@ -58,6 +65,8 @@ TARGET_CFLAGS += -DMAX_DEBUG_LEVEL=$(CONFIG_PACKAGE_SAMBA_MAX_DEBUG_LEVEL) -D__l
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 CONFIGURE_VARS += \
+	ac_cv_lib_attr_getxattr=no \
+	ac_cv_search_getxattr=no \
 	ac_cv_file__proc_sys_kernel_core_pattern=yes \
 	libreplace_cv_HAVE_C99_VSNPRINTF=yes \
 	libreplace_cv_HAVE_GETADDRINFO=yes \
@@ -96,6 +105,7 @@ CONFIGURE_ARGS += \
 	--with-piddir=/var/run \
 	--with-privatedir=/etc/samba \
 	--with-sendfile-support \
+	--without-acl-support \
 	--without-cluster-support \
 	--without-ads \
 	--without-krb5 \
@@ -107,6 +117,7 @@ CONFIGURE_ARGS += \
 	--without-libnetapi \
 	--without-libsmbclient \
 	--without-libsmbsharemodes \
+	--without-libtevent \
 	--without-libaddns \
 	--with-shared-modules=pdb_tdbsam,pdb_wbc_sam,idmap_nss,nss_info_template,auth_winbind,auth_wbc,auth_domain
 
@@ -124,9 +135,9 @@ define Package/samba36-server/install
 	$(INSTALL_BIN) ./files/samba.init $(1)/etc/init.d/samba
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_BIN)/samba_multicall $(1)/usr/sbin
-	ln -sf samba_multicall $(1)/usr/sbin/smbd
-	ln -sf samba_multicall $(1)/usr/sbin/nmbd
-	ln -sf samba_multicall $(1)/usr/sbin/smbpasswd
+	$(LN) samba_multicall $(1)/usr/sbin/smbd
+	$(LN) samba_multicall $(1)/usr/sbin/nmbd
+	$(LN) samba_multicall $(1)/usr/sbin/smbpasswd
 endef
 
 define Package/samba36-client/install
