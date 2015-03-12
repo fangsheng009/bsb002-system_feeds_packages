@@ -36,7 +36,7 @@ $(call Package/openswan/Default)
   SECTION:=net
   CATEGORY:=Network
   TITLE+= (daemon)
-  DEPENDS+= +libgmp +ip +kmod-openswan
+  DEPENDS+= +libgmp +kmod-openswan
 endef
 
 define Package/openswan/description
@@ -70,7 +70,7 @@ OPENSWAN_MAKEFLAGS:= \
 	IPSECDIR="/usr/lib/ipsec" \
 	INC_USRLOCAL="/usr" \
 	INC_RCDEFAULT="/etc/init.d" \
-	MODPROBE="/sbin/insmod" \
+	MODPROBE="insmod" \
 	DESTDIR="$(PKG_INSTALL_DIR)"
 
 define Build/Compile
