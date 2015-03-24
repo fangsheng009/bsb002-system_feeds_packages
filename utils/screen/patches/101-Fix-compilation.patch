@@ -1,0 +1,11 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -65,7 +65,7 @@ OFILES=	screen.o ansi.o fileio.o mark.o 
+ all:	screen
+ 
+ screen: $(OFILES)
+-	$(CC) $(LDFLAGS) -o $@ $(OFILES) $(LIBS)
++	$(CC) $(LDFLAGS) -o $@ $(OFILES) $(LIBS) -ltinfo
+ 
+ .c.o:
+ 	$(CC) -c -I. -I$(srcdir) $(M_CFLAGS) $(DEFS) $(OPTIONS) $(CFLAGS) $<
