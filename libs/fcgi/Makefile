@@ -20,6 +20,15 @@ PKG_FIXUP:=libtool-ucxx
 
 PKG_INSTALL:=1
 
+# if we have UCLIBCXX enabled in the build, go ahead and
+# add a dependency since there is no way to turn off the
+# detection via ./configure args, and we can break the
+# build if uclibc++ is installed at the wrong time upon
+# running make a second time
+ifeq ($(CONFIG_USE_UCLIBCXX),y)
+PKG_BUILD_DEPENDS:=$(CXX_DEPENDS)
+endif
+
 ifeq ($(CONFIG_INSTALL_LIBSTDCPP),y)
 include $(INCLUDE_DIR)/uclibc++.mk
 endif
