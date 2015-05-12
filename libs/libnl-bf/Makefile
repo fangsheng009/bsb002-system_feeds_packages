@@ -26,7 +26,6 @@ define Package/libnl-bf
   TITLE:=NetLink socket library with BF modifications
   DEPENDS:=@(!(PACKAGE_libnl)) +libpthread
   MAINTAINER:=Ryan Nowakowski <rnowakow@qca.qualcomm.com>
-  PROVIDES:=libnl-bf
 endef
 
 define Package/libnl-bf/description
