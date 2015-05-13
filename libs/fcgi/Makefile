@@ -16,22 +16,10 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.fastcgi.com/dist/
 PKG_MD5SUM:=d15060a813b91383a9f3c66faf84867e
 
-PKG_FIXUP:=libtool-ucxx
+PKG_FIXUP:=libtool
 
 PKG_INSTALL:=1
 
-# if we have UCLIBCXX enabled in the build, go ahead and
-# add a dependency since there is no way to turn off the
-# detection via ./configure args, and we can break the
-# build if uclibc++ is installed at the wrong time upon
-# running make a second time
-ifeq ($(CONFIG_USE_UCLIBCXX),y)
-PKG_BUILD_DEPENDS:=$(CXX_DEPENDS)
-endif
-
-ifeq ($(CONFIG_INSTALL_LIBSTDCPP),y)
-include $(INCLUDE_DIR)/uclibc++.mk
-endif
 include $(INCLUDE_DIR)/package.mk
 
 define Package/fcgi/Default
@@ -45,12 +33,6 @@ define Package/fcgi
   MENU:=1
   DEPENDS:= +libpthread
   TITLE:=Shared library of FastCGI
-endef
-
-define Package/fcgixx
-  $(call Package/fcgi/Default)
-  DEPENDS:=fcgi $(CXX_DEPENDS)
-  TITLE:=Shared library of FastCGI++
 endef
 
 define Package/fcgi/description
@@ -83,10 +65,4 @@ define Package/fcgi/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfcgi.so.* $(1)/usr/lib/
 endef
 
-define Package/fcgixx/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfcgi++.so.* $(1)/usr/lib/
-endef
-
 $(eval $(call BuildPackage,fcgi))
-$(eval $(call BuildPackage,fcgixx))
