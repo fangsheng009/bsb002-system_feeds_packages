@@ -25,7 +25,6 @@ define Package/libnl-bf
   CATEGORY:=Bandwidth Control
   TITLE:=NetLink socket library with BF modifications
   DEPENDS:=@(!(PACKAGE_libnl)) +libpthread
-  MAINTAINER:=Ryan Nowakowski <rnowakow@qca.qualcomm.com>
 endef
 
 define Package/libnl-bf/description
