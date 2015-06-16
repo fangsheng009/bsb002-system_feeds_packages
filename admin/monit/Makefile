@@ -12,7 +12,7 @@ PKG_VERSION:=5.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://ftp.dk.debian.org/oe-lite/monit
+PKG_SOURCE_URL:=http://mmonit.com/monit/dist
 PKG_MD5SUM:=f1f391241d44059d0d3e5d26f4ec5ddf
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
