@@ -27,7 +27,7 @@ get_switch_config_auto(){
 	board=$(ipq806x_board_name)
 
 	case "$board" in
-	ap160)
+	ap160*|ap161*)
 		echo "=qca eth1 eth1 1 port1"
 		echo "=qca eth1 eth1 2 port2"
 		echo "=qca eth1 eth1 3 port3"
