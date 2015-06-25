@@ -17,3 +17,8 @@ start() {
 stop() {
 	service_stop /sbin/rngd
 }
+
+restart() {
+	stop
+	start
+}

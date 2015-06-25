@@ -39,6 +39,8 @@ define Package/rng-tools/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rngtest $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rngd $(1)/sbin/
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_DATA) ./files/rngd.hotplug $(1)/etc/hotplug.d/iface/90-rngd
 endef
 
 $(eval $(call BuildPackage,rng-tools))
