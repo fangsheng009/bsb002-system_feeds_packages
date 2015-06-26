@@ -3,17 +3,15 @@
 
 START=98
 
-RNGD_MAX_WRITES_PER_SEC=50
-RNGD_AMOUNT=4000
+RNGD_STEP=256
+RNGD_AMOUNT=2048
 RNGD_DEVICE="/dev/urandom"
-RNGD_OUT_DEVICE="/dev/random"
 
 start() {
         if [ -e /dev/hwrng ]; then
                 RNGD_DEVICE="/dev/hwrng"
-                RNGD_OUT_DEVICE="/dev/urandom"
         fi
-        service_start /sbin/rngd -r $RNGD_DEVICE -o $RNGD_OUT_DEVICE -W $RNGD_AMOUNT -m $RNGD_MAX_WRITES_PER_SEC
+        service_start /sbin/rngd -r $RNGD_DEVICE -W $RNGD_AMOUNT -s $RNGD_STEP
 }
 
 stop() {
