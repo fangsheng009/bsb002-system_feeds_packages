@@ -32,6 +32,10 @@ CONFIGURE_VARS += \
     LIBS="-largp"
 endif
 
+ifneq ($(CONFIG_TARGET_ar71xx),)
+EXTRA_CFLAGS := -DENTROPY_FACTOR=5
+endif
+
 define Package/rng-tools/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/rngd.init $(1)/etc/init.d/rngd
