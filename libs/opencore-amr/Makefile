@@ -18,7 +18,7 @@ define Package/$(PKG_NAME)
   CATEGORY:=Libraries
   TITLE:= Audio codecs extracted from Android Open Source Project
   DEPENDS:=$(CXX_DEPENDS)
-  MAINTAINER:=Matthew McClintock <mmcclint@qca.qualcomm.com>
+  MAINTAINER:=Matthew McClintock <mmcclint@codeaurora.org>
 endef
 
 define Package/$(PKG_NAME)/description
