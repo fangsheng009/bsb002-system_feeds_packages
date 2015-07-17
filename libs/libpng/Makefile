@@ -12,7 +12,7 @@ PKG_VERSION:=1.2.50
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=@SF/libpng
+PKG_SOURCE_URL:=http://mirror.internode.on.net/pub/slackware/slackware-13.1/patches/source/libpng
 PKG_MD5SUM:=a3e00fccbfe356174ab515b5c00641c7
 
 PKG_LICENSE:=LIBPNG GPLv2
