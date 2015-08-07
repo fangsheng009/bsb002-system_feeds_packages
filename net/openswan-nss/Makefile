@@ -92,8 +92,12 @@ endef
 define Package/openswan-nss/install
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(CP) ./files/ipsec.init $(1)/etc/init.d/ipsec
 	$(CP) ./files/*.conf $(1)/etc/
+	$(CP) ./files/ipsec.hotplug $(1)/etc/hotplug.d/iface/80-ipsec
+	$(CP) ./files/ipsec.default $(1)/etc/uci-defaults/ipsec
 	$(CP) ./files/ipsec.secrets $(1)/etc/ipsec.secrets
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/ipsec.config $(1)/etc/config/ipsec

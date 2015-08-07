@@ -30,7 +30,7 @@
 # description: IPsec provides encrypted and authenticated communications; \
 # KLIPS is the kernel half of it, Pluto is the user-level management daemon.
 
-START=
+START=80
 EXTRA_COMMANDS=status
 EXTRA_HELP="	status	Show the status of the service"
 
@@ -399,6 +399,8 @@ start() {
 }
 
 stop() {
+	touch /etc/ipsec.uci.conf
+	touch /etc/ipsec.uci.secrets
 	unload_nss_fastpath
 	script_init stop "$@"
 	script_command stop "$@"
