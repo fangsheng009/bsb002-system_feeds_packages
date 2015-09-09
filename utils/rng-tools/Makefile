@@ -22,7 +22,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/rng-tools
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+USE_UCLIBC:argp-standalone
+  DEPENDS:=+USE_UCLIBC:argp-standalone +libgcrypt
   TITLE:=Daemon for adding entropy to kernel entropy pool
   URL:=http://sourceforge.net/projects/gkernel/
 endef
