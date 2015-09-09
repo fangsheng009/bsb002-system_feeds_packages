@@ -11,8 +11,7 @@ PKG_NAME:=i2c-tools
 PKG_VERSION:=2013-12-15
 PKG_RELEASE:=1
 
-PKG_SOURCE_PROTO:=svn
-PKG_SOURCE_URL:=http://lm-sensors.org/svn/i2c-tools/trunk
+PKG_SOURCE_URL:=http://dev.gateworks.com/sources
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=r6204
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
