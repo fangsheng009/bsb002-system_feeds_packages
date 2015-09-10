@@ -11,8 +11,7 @@ PKG_NAME:=i2c-tools
 PKG_VERSION:=2013-12-15
 PKG_RELEASE:=1
 
-PKG_SOURCE_PROTO:=svn
-PKG_SOURCE_URL:=http://lm-sensors.org/svn/i2c-tools/trunk
+PKG_SOURCE_URL:=https://www.codeaurora.org/mirrored_source/quic/qsdk
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=r6204
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
@@ -24,7 +23,7 @@ include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)
 
 define Package/i2c/Default
-  URL:=http://lm-sensors.org/wiki/I2CTools
+  URL:=https://www.codeaurora.org/mirrored_source/quic/qsdk
   TITLE:=I2C
 endef
 
