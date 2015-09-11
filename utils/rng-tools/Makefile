@@ -32,8 +32,10 @@ CONFIGURE_VARS += \
     LIBS="-largp"
 endif
 
+EXTRA_CFLAGS := -DRNG_TEST_PRIV
+
 ifneq ($(CONFIG_TARGET_ar71xx),)
-EXTRA_CFLAGS := -DENTROPY_FACTOR=5 -DRNG_TEST_PRIV
+EXTRA_CFLAGS += -DENTROPY_FACTOR=5
 endif
 
 define Package/rng-tools/install
