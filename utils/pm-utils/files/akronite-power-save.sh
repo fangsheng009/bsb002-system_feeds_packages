@@ -39,6 +39,13 @@ ac_power()
 # USB Power-UP Sequence
 	[ -d /sys/module/dwc3_ipq ] || insmod dwc3-ipq
 
+# SD/MMC Power-UP sequence
+	if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
+	then
+		sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
+		echo $sd_drvname > /sys/bus/mmc/drivers/mmcblk/bind
+	fi
+
 	exit 0
 }
 
@@ -99,6 +106,14 @@ battery_power()
 # USB Power-down Sequence
 	[ -d /sys/module/dwc3_ipq ] && rmmod dwc3-ipq
 	sleep 1
+
+#SD/MMC Power-down Sequence
+	if [ -d /sys/block/mmcblk0 ]
+	then
+		sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $7}'`
+		echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
+		echo $sd_drvname > /sys/bus/mmc/drivers/mmcblk/unbind
+	fi
 
 # Disabling Auto scale on NSS cores
 	echo 0 > /proc/sys/dev/nss/clock/auto_scale
