@@ -462,21 +462,27 @@ index 5ced836..ea38faf 100644
  	uint32_t		qh_rate2quantum;
 diff --git a/include/netlink/route/qdisc/bf.h b/include/netlink/route/qdisc/bf.h
 new file mode 100644
-index 0000000..3cf2acf
+index 0000000..c5558ef
 --- /dev/null
 +++ b/include/netlink/route/qdisc/bf.h
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,53 @@
 +/*
-+ * netlink/route/sch/bf.h	HTB Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2003-2011 Thomas Graf <tgraf@suug.ch>
-+ * Copyright (c) 2005 Petr Gotthard <petr.gotthard@siemens.com>
-+ * Copyright (c) 2005 Siemens AG Oesterreich
++ * netlink/route/sch/bf.h	BF Qdisc
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_BF_H_
@@ -681,14 +687,27 @@ index 0000000..d47b29d
 +#endif
 diff --git a/include/netlink/route/qdisc/sfb.h b/include/netlink/route/qdisc/sfb.h
 new file mode 100644
-index 0000000..29366d7
+index 0000000..2899ab2
 --- /dev/null
 +++ b/include/netlink/route/qdisc/sfb.h
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,60 @@
 +/*
 + * netlink/route/sch/sfb.c	SFB Qdisc
-+ *
-+ * Copyright (c) 2012 Ben Menchaca
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_SFB_H_
@@ -768,19 +787,27 @@ index aee8d0f..cc88227 100644
  cli_qdisc_plug_la_LDFLAGS = -module -avoid-version
 diff --git a/lib/cli/qdisc/bf.c b/lib/cli/qdisc/bf.c
 new file mode 100644
-index 0000000..c7a4373
+index 0000000..04b146b
 --- /dev/null
 +++ b/lib/cli/qdisc/bf.c
-@@ -0,0 +1,210 @@
+@@ -0,0 +1,218 @@
 +/*
-+ * src/lib/bf.c     	Bigfoot module for CLI lib
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2010-2011 Thomas Graf <tgraf@suug.ch>
++ * lib/cli/qdisc/bf.c     	Bigfoot module for CLI lib
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#include <netlink/cli/utils.h>
@@ -1219,19 +1246,27 @@ index abed244..a6cdcb3 100644
  /** @} */
 diff --git a/lib/route/qdisc/bf.c b/lib/route/qdisc/bf.c
 new file mode 100644
-index 0000000..1158e7b
+index 0000000..f1f207e
 --- /dev/null
 +++ b/lib/route/qdisc/bf.c
-@@ -0,0 +1,535 @@
+@@ -0,0 +1,543 @@
 +/*
 + * lib/route/qdisc/bf.c		BF Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2003-2011 Thomas Graf <tgraf@suug.ch>
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
@@ -3054,14 +3089,27 @@ index 0000000..a19e5be
 +}
 diff --git a/lib/route/qdisc/sfb.c b/lib/route/qdisc/sfb.c
 new file mode 100644
-index 0000000..a7cb808
+index 0000000..6d8a2e8
 --- /dev/null
 +++ b/lib/route/qdisc/sfb.c
-@@ -0,0 +1,513 @@
+@@ -0,0 +1,526 @@
 +/*
 + * lib/route/qdisc/sfb.c		Stochastic Fair Blue Qdisc
-+ *
-+ * Copyright (c) 2012 Ben Menchaca
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
