@@ -18,7 +18,8 @@ include $(INCLUDE_DIR)/package.mk
 define Package/perf
   SECTION:=devel
   CATEGORY:=Development
-  DEPENDS:= +libelf1 +libdw +libpthread +librt +binutils
+  DEPENDS:= +libelf1 +libdw +libpthread +librt +binutils +coreutils \
+	    +coreutils-expand
   TITLE:=Linux performance monitoring tool
   VERSION:=$(LINUX_VERSION)-$(PKG_RELEASE)
   URL:=http://www.kernel.org
