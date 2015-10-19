@@ -1,43 +1,8 @@
-From eec7fe68de013fd293b5f40d23370f0ddf82cc27 Mon Sep 17 00:00:00 2001
-From: Sakthi Vignesh Radhakrishnan <sradhakr@codeaurora.org>
-Date: Mon, 3 Mar 2014 17:43:14 -0800
-Subject: [PATCH] Add nssqdisc support
-
-Signed-off-by: Sakthi Vignesh Radhakrishnan <sradhakr@codeaurora.org>
----
- include/Makefile.am                    |   5 +
- include/linux/pkt_sched.h              |  91 ++++++++
- include/netlink-types.h                |  41 ++++
- include/netlink/route/qdisc/nssbf.h    |  38 ++++
- include/netlink/route/qdisc/nsscodel.h |  38 ++++
- include/netlink/route/qdisc/nssfifo.h  |  32 +++
- include/netlink/route/qdisc/nssprio.h  |  29 +++
- include/netlink/route/qdisc/nsstbl.h   |  38 ++++
- lib/Makefile.am                        |   4 +
- lib/cli/qdisc/nsspfifo.c               |  84 ++++++++
- lib/route/qdisc/nssbf.c                | 367 +++++++++++++++++++++++++++++++++
- lib/route/qdisc/nsscodel.c             | 304 +++++++++++++++++++++++++++
- lib/route/qdisc/nssfifo.c              | 208 +++++++++++++++++++
- lib/route/qdisc/nssprio.c              | 154 ++++++++++++++
- lib/route/qdisc/nsstbl.c               | 323 +++++++++++++++++++++++++++++
- 15 files changed, 1756 insertions(+)
- create mode 100644 include/netlink/route/qdisc/nssbf.h
- create mode 100644 include/netlink/route/qdisc/nsscodel.h
- create mode 100644 include/netlink/route/qdisc/nssfifo.h
- create mode 100644 include/netlink/route/qdisc/nssprio.h
- create mode 100644 include/netlink/route/qdisc/nsstbl.h
- create mode 100644 lib/cli/qdisc/nsspfifo.c
- create mode 100644 lib/route/qdisc/nssbf.c
- create mode 100644 lib/route/qdisc/nsscodel.c
- create mode 100644 lib/route/qdisc/nssfifo.c
- create mode 100644 lib/route/qdisc/nssprio.c
- create mode 100644 lib/route/qdisc/nsstbl.c
-
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/Makefile.am
-===================================================================
---- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/include/Makefile.am	2014-06-02 10:14:47.164116435 -0500
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/Makefile.am	2014-06-02 10:14:47.156116435 -0500
-@@ -59,6 +59,11 @@
+diff --git a/include/Makefile.am b/include/Makefile.am
+index 79ade11..38d3117 100644
+--- a/include/Makefile.am
++++ b/include/Makefile.am
+@@ -59,6 +59,11 @@ nobase_libnlinclude_HEADERS = \
  	netlink/route/qdisc/codel.h \
  	netlink/route/qdisc/fq_codel.h \
  	netlink/route/qdisc/plug.h \
@@ -49,11 +14,11 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/Makefile.am
  	netlink/route/addr.h \
  	netlink/route/class.h \
  	netlink/route/classifier.h \
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/linux/pkt_sched.h
-===================================================================
---- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/include/linux/pkt_sched.h	2014-06-02 10:14:47.164116435 -0500
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/linux/pkt_sched.h	2014-06-02 10:14:47.156116435 -0500
-@@ -754,5 +754,96 @@
+diff --git a/include/linux/pkt_sched.h b/include/linux/pkt_sched.h
+index a614d99..2e89cc2 100644
+--- a/include/linux/pkt_sched.h
++++ b/include/linux/pkt_sched.h
+@@ -754,5 +754,96 @@ struct tc_bf_xstats {
  
  #define TCA_BF_MAX      (__TCA_BF_MAX - 1)
  
@@ -150,11 +115,11 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/linux/pkt_sche
 +};
  
  #endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink-types.h
-===================================================================
---- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/include/netlink-types.h	2014-06-02 10:14:47.164116435 -0500
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink-types.h	2014-06-02 10:14:47.156116435 -0500
-@@ -646,6 +646,47 @@
+diff --git a/include/netlink-types.h b/include/netlink-types.h
+index ea38faf..f8e318e 100644
+--- a/include/netlink-types.h
++++ b/include/netlink-types.h
+@@ -646,6 +646,47 @@ struct rtnl_sfb
  	uint32_t	qsb_mask;
  };
  
@@ -202,20 +167,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink-types.
  struct rtnl_netem_corr
  {
  	uint32_t	nmc_delay;
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssbf.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssbf.h	2014-06-02 10:18:17.932120392 -0500
-@@ -0,0 +1,41 @@
+diff --git a/include/netlink/route/qdisc/nssbf.h b/include/netlink/route/qdisc/nssbf.h
+new file mode 100644
+index 0000000..3d03126
+--- /dev/null
++++ b/include/netlink/route/qdisc/nssbf.h
+@@ -0,0 +1,49 @@
 +/*
 + * netlink/route/sch/nssbf.h	NSSBF Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSBF_H_
@@ -248,20 +222,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/
 +#endif
 +
 +#endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsscodel.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsscodel.h	2014-06-02 10:14:47.156116435 -0500
-@@ -0,0 +1,38 @@
+diff --git a/include/netlink/route/qdisc/nsscodel.h b/include/netlink/route/qdisc/nsscodel.h
+new file mode 100644
+index 0000000..331032b
+--- /dev/null
++++ b/include/netlink/route/qdisc/nsscodel.h
+@@ -0,0 +1,46 @@
 +/*
 + * netlink/route/sch/nsscodel.h	NSSCODEL Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSCODEL_H_
@@ -291,20 +274,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/
 +#endif
 +
 +#endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssfifo.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssfifo.h	2014-06-02 10:14:47.156116435 -0500
-@@ -0,0 +1,32 @@
+diff --git a/include/netlink/route/qdisc/nssfifo.h b/include/netlink/route/qdisc/nssfifo.h
+new file mode 100644
+index 0000000..37e6475
+--- /dev/null
++++ b/include/netlink/route/qdisc/nssfifo.h
+@@ -0,0 +1,40 @@
 +/*
 + * netlink/route/sch/nssfifo.c	NSSFIFO Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSFIFO_H_
@@ -328,20 +320,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/
 +#endif
 +
 +#endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssprio.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nssprio.h	2014-06-02 10:14:47.156116435 -0500
-@@ -0,0 +1,29 @@
+diff --git a/include/netlink/route/qdisc/nssprio.h b/include/netlink/route/qdisc/nssprio.h
+new file mode 100644
+index 0000000..39296d8
+--- /dev/null
++++ b/include/netlink/route/qdisc/nssprio.h
+@@ -0,0 +1,37 @@
 +/*
 + * netlink/route/sch/nssprio.h	NSSPRIO Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSPRIO_H_
@@ -362,20 +363,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/
 +#endif
 +
 +#endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsstbl.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/qdisc/nsstbl.h	2014-06-02 10:14:47.156116435 -0500
-@@ -0,0 +1,38 @@
+diff --git a/include/netlink/route/qdisc/nsstbl.h b/include/netlink/route/qdisc/nsstbl.h
+new file mode 100644
+index 0000000..c896540
+--- /dev/null
++++ b/include/netlink/route/qdisc/nsstbl.h
+@@ -0,0 +1,46 @@
 +/*
 + * netlink/route/sch/nsstbl.h	NSSTBL Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#ifndef NETLINK_NSSTBL_H_
@@ -405,11 +415,11 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/include/netlink/route/
 +#endif
 +
 +#endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am
-===================================================================
---- libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf.orig/lib/Makefile.am	2014-06-02 10:14:47.164116435 -0500
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am	2014-06-02 10:14:47.156116435 -0500
-@@ -76,6 +76,8 @@
+diff --git a/lib/Makefile.am b/lib/Makefile.am
+index cc88227..1a4c440 100644
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -76,6 +76,8 @@ libnl_route_3_la_SOURCES = \
  	route/qdisc/hfsc.c route/qdisc/codel.c route/qdisc/fq_codel.c \
  	route/qdisc/drr.c \
  	route/qdisc/bf.c \
@@ -418,7 +428,7 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am
  	\
  	fib_lookup/lookup.c fib_lookup/request.c \
  	\
-@@ -108,6 +110,7 @@
+@@ -108,6 +110,7 @@ nobase_pkglib_LTLIBRARIES = \
  	cli/qdisc/pfifo.la \
  	cli/qdisc/plug.la \
  	cli/qdisc/bfifo.la \
@@ -426,7 +436,7 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am
  	cli/cls/basic.la \
  	cli/cls/cgroup.la
  
-@@ -118,6 +121,7 @@
+@@ -118,6 +121,7 @@ cli_qdisc_blackhole_la_LDFLAGS = -module -avoid-version
  cli_qdisc_pfifo_la_LDFLAGS = -module -avoid-version
  cli_qdisc_plug_la_LDFLAGS = -module -avoid-version
  cli_qdisc_bfifo_la_LDFLAGS = -module -avoid-version
@@ -434,20 +444,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/Makefile.am
  cli_cls_basic_la_LDFLAGS = -module -avoid-version
  cli_cls_cgroup_la_LDFLAGS = -module -avoid-version
  endif
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/cli/qdisc/nsspfifo.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/cli/qdisc/nsspfifo.c	2014-06-02 10:14:47.156116435 -0500
-@@ -0,0 +1,84 @@
+diff --git a/lib/cli/qdisc/nsspfifo.c b/lib/cli/qdisc/nsspfifo.c
+new file mode 100644
+index 0000000..b9d3cf8
+--- /dev/null
++++ b/lib/cli/qdisc/nsspfifo.c
+@@ -0,0 +1,92 @@
 +/*
 + * src/lib/nsspfifo.c     	nsspfifo module for CLI lib
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +#include <netlink/cli/utils.h>
@@ -523,20 +542,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/cli/qdisc/nsspfifo
 +{
 +	nl_cli_tc_unregister(&nsspfifo_module);
 +}
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssbf.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssbf.c	2014-06-02 10:23:40.232126443 -0500
-@@ -0,0 +1,403 @@
+diff --git a/lib/route/qdisc/nssbf.c b/lib/route/qdisc/nssbf.c
+new file mode 100644
+index 0000000..9a35621
+--- /dev/null
++++ b/lib/route/qdisc/nssbf.c
+@@ -0,0 +1,411 @@
 +/*
 + * lib/route/qdisc/nssbf.c		NSSBF Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
@@ -931,20 +959,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssbf.
 +}
 +
 +/** @} */
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsscodel.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsscodel.c	2014-06-02 10:14:47.156116435 -0500
-@@ -0,0 +1,304 @@
+diff --git a/lib/route/qdisc/nsscodel.c b/lib/route/qdisc/nsscodel.c
+new file mode 100644
+index 0000000..f214430
+--- /dev/null
++++ b/lib/route/qdisc/nsscodel.c
+@@ -0,0 +1,312 @@
 +/*
 + * lib/route/qdisc/nsscodel.c		NSSCODEL Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
@@ -1240,20 +1277,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsscod
 +}
 +
 +/** @} */
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssfifo.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssfifo.c	2014-06-02 10:14:47.160116435 -0500
-@@ -0,0 +1,208 @@
+diff --git a/lib/route/qdisc/nssfifo.c b/lib/route/qdisc/nssfifo.c
+new file mode 100644
+index 0000000..511fff0
+--- /dev/null
++++ b/lib/route/qdisc/nssfifo.c
+@@ -0,0 +1,216 @@
 +/*
 + * lib/route/qdisc/nssfifo.c
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
@@ -1453,20 +1499,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssfif
 +}
 +
 +/** @} */
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssprio.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nssprio.c	2014-06-02 10:14:47.160116435 -0500
-@@ -0,0 +1,154 @@
+diff --git a/lib/route/qdisc/nssprio.c b/lib/route/qdisc/nssprio.c
+new file mode 100644
+index 0000000..67ae66d
+--- /dev/null
++++ b/lib/route/qdisc/nssprio.c
+@@ -0,0 +1,162 @@
 +/*
 + * lib/route/qdisc/nssprio.c		NSSPRIO Qdisc/Class
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
@@ -1612,20 +1667,29 @@ Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsspri
 +}
 +
 +/** @} */
-Index: libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsstbl.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ libnl-bf-g7d47666eb3c414feb8901970d35b96461214c2bf/lib/route/qdisc/nsstbl.c	2014-06-02 10:14:47.160116435 -0500
-@@ -0,0 +1,323 @@
+diff --git a/lib/route/qdisc/nsstbl.c b/lib/route/qdisc/nsstbl.c
+new file mode 100644
+index 0000000..577b89f
+--- /dev/null
++++ b/lib/route/qdisc/nsstbl.c
+@@ -0,0 +1,331 @@
 +/*
 + * lib/route/qdisc/nsstbl.c		NSSTBL Qdisc
-+ *
-+ *	This library is free software; you can redistribute it and/or
-+ *	modify it under the terms of the GNU Lesser General Public
-+ *	License as published by the Free Software Foundation version 2.1
-+ *	of the License.
-+ *
-+ * Copyright (c) 2014
++ */
++/*
++ **************************************************************************
++ * Copyright (c) 2015, The Linux Foundation. All rights reserved.
++ * Permission to use, copy, modify, and/or distribute this software for
++ * any purpose with or without fee is hereby granted, provided that the
++ * above copyright notice and this permission notice appear in all copies.
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
++ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ **************************************************************************
 + */
 +
 +/**
