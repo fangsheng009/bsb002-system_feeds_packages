@@ -3090,10 +3090,10 @@ index 0000000..a19e5be
 +}
 diff --git a/lib/route/qdisc/sfb.c b/lib/route/qdisc/sfb.c
 new file mode 100644
-index 0000000..6d8a2e8
+index 0000000..2612285
 --- /dev/null
 +++ b/lib/route/qdisc/sfb.c
-@@ -0,0 +1,526 @@
+@@ -0,0 +1,522 @@
 +/*
 + * lib/route/qdisc/sfb.c		Stochastic Fair Blue Qdisc
 + */
@@ -3118,11 +3118,7 @@ index 0000000..6d8a2e8
 + * @defgroup qdisc_sfb Stochastic Fair Blue (SFB)
 + * @brief
 + * Sch_sfb is an implementation of the Stochastic Fair Blue (SFB) queue
-+ * management algorithm for Linux.  SFB is described in
-+ *
-+ *  Stochastic Fair Blue: A Queue Management Algorithm for Enforcing
-+ *  Fairness.  Wu-chang Feng, Dilip D. Kandlur, Debanjan Saha and
-+ *  Kang G. Shin.  Proc. INFOCOM'01. 2001.
++ * management algorithm for Linux.
 + *
 + * SFB aims to keep your queues short while avoiding packet drops,
 + * maximising link utilisation and preserving fairness between flows.
