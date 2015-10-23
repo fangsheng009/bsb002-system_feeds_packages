@@ -21,7 +21,7 @@ PKG_SOURCE_URL:=http://curl.haxx.se/download/ \
 	http://curl.mirrors.cyberservers.net/download/
 PKG_MD5SUM:=fa5f37f38a8042020e292ce7ec5341ce
 
-PKG_FIXUP:=autoreconf
+PKG_FIXUP:=libtool
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
