@@ -1,5 +1,6 @@
 #!/bin/sh
 
+. /lib/functions.sh
 ac_power()
 {
 	echo "Entering AC-Power Mode"
@@ -40,10 +41,13 @@ ac_power()
 	[ -d /sys/module/dwc3_ipq ] || insmod dwc3-ipq
 
 # SD/MMC Power-UP sequence
-	if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
-	then
-		sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
-		echo $sd_drvname > /sys/bus/mmc/drivers/mmcblk/bind
+	local emmcblock="$(find_mmc_part "rootfs")"
+	if [ -z "$emmcblock" ]; then
+		if [[ -f /tmp/sysinfo/sd_drvname  && ! -d /sys/block/mmcblk0 ]]
+		then
+			sd_drvname=$(cat /tmp/sysinfo/sd_drvname)
+			echo $sd_drvname > /sys/bus/mmc/drivers/mmcblk/bind
+		fi
 	fi
 
 	exit 0
@@ -108,11 +112,14 @@ battery_power()
 	sleep 1
 
 #SD/MMC Power-down Sequence
-	if [ -d /sys/block/mmcblk0 ]
-	then
-		sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $7}'`
-		echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
-		echo $sd_drvname > /sys/bus/mmc/drivers/mmcblk/unbind
+	local emmcblock="$(find_mmc_part "rootfs")"
+	if [ -z "$emmcblock" ]; then
+		if [ -d /sys/block/mmcblk0 ]
+		then
+			sd_drvname=`readlink /sys/block/mmcblk0 | awk -F "/" '{print $7}'`
+			echo "$sd_drvname" > /tmp/sysinfo/sd_drvname
+			echo $sd_drvname > /sys/bus/mmc/drivers/mmcblk/unbind
+		fi
 	fi
 
 # Disabling Auto scale on NSS cores
