@@ -39,7 +39,8 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)/mcproxy \
 		CC="$(TARGET_CC)" \
 		CXX="$(TARGET_CXX)" \
-		CFLAGS="$(TARGET_CFLAGS)"
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)"
 endef
 
 define Package/mcproxy/install
